@@ -1,0 +1,87 @@
+:root {
+    --main-color: #1b1b1b;
+    --text-color: #d6c5d4;
+    --light-accent: #8b8b8b;
+    --dark-accent: #3d3d3d;
+    --color-accent: #df5bc2;
+
+    background-color: var(--main-color);
+    font-family: sans-serif;
+    color: var(--text-color);
+}
+
+body {
+    margin: 0;
+}
+
+#user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em 0 1em;
+}
+
+.theme-picker {
+    align-self: flex-start;
+}
+
+.theme-picker > fieldset {
+    border: 0;
+    display: flex;
+    background-color: var(--dark-accent);
+    border-radius: 0 0 4px 4px;
+}
+
+.theme-picker input[type="radio"] {
+    appearance: none;
+    width: 1em;
+    height: 1em;
+    border: 2px solid var(--color-accent);
+}
+
+#weekly-view {
+    display: flex;
+    justify-content: space-around;
+    padding: min(1.5em, 5vh);
+    gap: 1px
+}
+
+.weekday {
+    width: max(60px, 12em);
+    height: 80px;
+    border: 1px solid var(--dark-accent);
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.select-day {
+    background-color: var(--color-accent);
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.main { 
+    border: 1px solid var(--dark-accent);
+    border-radius: 5px;
+    width: 80vw;
+    height: 150px;
+    padding: 0.5em;
+}
+
+.hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
