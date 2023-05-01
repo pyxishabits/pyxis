@@ -11,19 +11,20 @@
 </head>
 <body>
     
-</body>
-</html>
+
     <h1>Pyxis Home Page</h1>
 {% block content %}
 {% if user.is_authenticated %}
 <h1>Welcome {{ user.username }}!</h1>
-<p><a href="{% url 'logout' %}">Logout</a><p>
+<p><a href="{% url 'logout' %}">Logout</a></p>
 {% else %}
 <h1>Welcome, visitor!</h1>
-<p>You are not logged in. <a href="{% url 'login' %}">Login</a> 
+<p>You are not logged in. <a href="{% url 'login' %}">Login</a></p>
 <p>Don't have an account?</p>
 <div><a href="{% url 'accounts:signup' %}">Sign Up</a></div>
 
 {% endif %}
-
 {% endblock %}
+
+</body>
+</html>
