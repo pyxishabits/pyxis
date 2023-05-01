@@ -1,7 +1,8 @@
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-#from app.models import model
+from tasks.models import *
+from django.utils import timezone
 from django.contrib.auth.models import User
 from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
 import datetime
@@ -27,9 +28,10 @@ class HabitTaskView(generics.ListAPIView):
     serializer_class = HabitTaskSerializer
     # queryset = HabitTask.objects.all()
 
-class TaskView(generics.ListAPIView):
+class TaskView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
-    # queryset = Task.objects.all()
+    queryset = Task.objects.all()
+    # queryset = Task.objects.filter(date= timezone.now())
 
 class JournalView(generics.ListAPIView):
     serializer_class = JournalSerializer
