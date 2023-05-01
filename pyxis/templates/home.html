@@ -8,25 +8,97 @@
 
 
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <title>{% block title %}Pyxis Home {% endblock %}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="{% static 'js/app.js' %}" defer></script>
+
+    <title>{% block title %}Pyxis Home{% endblock %}</title>
     
 </head>
 <body>
-    
+    <div id="app">
 
-    <h1>Pyxis Home Page</h1>
-{% block content %}
-{% if user.is_authenticated %}
-<h1>Welcome {{ user.username }}!</h1>
-<p><a href="{% url 'logout' %}">Logout</a></p>
-{% else %}
-<h1>Welcome, visitor!</h1>
-<p>You are not logged in. <a href="{% url 'login' %}">Login</a></p>
-<p>Don't have an account?</p>
-<div><a href="{% url 'accounts:signup' %}">Sign Up</a></div>
+        <header id="header">
+            <div id="user-info">
+                <form class="theme-picker">
+                    <fieldset>
+                        <legend class="sr-hidden">Themes</legend>
+                        <label for="theme" class="sr-hidden">Dark</label>
+                        <input type="radio" name="theme" id="dark" checked>
+                        <label for="theme" class="sr-hidden">Light</label>
+                        <input type="radio" name="theme" id="light">
+                    </fieldset>
+                </form> 
+                {% block authcontent %}
+                {% if user.is_authenticated %}
+                <div class="greeting">
+                    <h2>Welcome, {{ user.username }}!</h2>
+                </div>
+                <div class="auth">
+                    <a href="{% url 'logout' %}">LOGOUT</a>
+                </div>
+                {% else %}
+                <div class="greeting">
+                    <h2>Welcome, visitor!</h2>
+                </div>
+                <div class="auth">
+                    <a href="{% url 'login' %}">Login</a> or
+                    <a href="{% url 'accounts:signup' %}">Sign Up</a>
+                </div>
+                {% endif %}
+                {% endblock %}
+            </div>
 
-{% endif %}
-{% endblock %}
-
+            <nav id="weekly-view">
+                <div id="sunday" class="weekday">
+                    S
+                </div>
+                <div id="monday" class="weekday select-day">
+                    <!-- TODO: use vue dynamic class toggle to identify current day of week on mount -->
+                    M
+                </div>
+                <div id="tuesday" class="weekday">
+                    T     
+                </div>
+                <div id="wednesday" class="weekday">
+                    W
+                </div>
+                <div id="thursday" class="weekday">
+                    T   
+                </div>
+                <div id="friday" class="weekday">
+                    F  
+                </div>
+                <div id="saturday" class="weekday">
+                    S 
+                </div>
+            </nav>
+        </header>
+        
+        <div id="wrapper">
+            <!-- TODO: preview hooks vs expanded hooks -->
+            {% block content %}
+            <div id="habits" class="main">
+                HABITS
+                {% if user.is_authenticated %}
+                <dl v-for="h in habits">
+                    <dt>[[ h.name ]]</dt>
+                    <dd>[[ h.description ]]</dd>
+                </dl>
+                {% else %}
+                <p>Sign up and get started!</p>
+                <!-- TODO? create placeholder displays for unauthenticated viewers?? -->
+                {% endif %}
+            </div>
+            <div id="tasks" class="main">
+                TASKS
+            </div>
+            <div id="journal" class="main">
+                JOURNAL
+            </div>
+            {% endblock %}
+        </div>
+        
+    </div>
 </body>
 </html>

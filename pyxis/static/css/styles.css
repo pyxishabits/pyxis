@@ -10,8 +10,22 @@
     color: var(--text-color);
 }
 
+:root:has(#light:checked) {
+    --main-color: #ced8dd;
+    --text-color: #0f1222;
+    --light-accent: #fafafa;
+    --dark-accent: #5a687c;
+    --color-accent: #1a6496;
+}
+
 body {
     margin: 0;
+}
+
+a {
+    font-weight: 500;
+    color: var(--text-color);
+    text-decoration: none;
 }
 
 #user-info {
@@ -34,9 +48,16 @@ body {
 
 .theme-picker input[type="radio"] {
     appearance: none;
-    width: 1em;
-    height: 1em;
-    border: 2px solid var(--color-accent);
+    width: 0.6em;
+    height: 0.6em;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 5px;
+    margin: 10px
+}
+
+.theme-picker input[type="radio"]:checked {
+    background-color: var(--main-color);
 }
 
 #weekly-view {
@@ -76,7 +97,7 @@ body {
     padding: 0.5em;
 }
 
-.hidden {
+.sr-hidden {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
     height: 1px;
