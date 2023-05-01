@@ -1,27 +1,27 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-# from app.models import model
+from tasks.models import Task, Habit, HabitTask, Journal
 
 class HabitSerializer(serializers.ModelSerializer):
     class Meta:
-        # model = model
-        fields = ['name', 'description', 'schedule', 'user',
-                  'complete']
+        model = Habit
+        fields = ['name', 'description', 'recurrence', 'user']
 
 class HabitTaskSerializer(serializers.ModelSerializer):
     class Meta:
-        # model = model
-        fields = ['name', 'habit', 'description', 'complete']
+        model = HabitTask
+        fields = ['name', 'habit', 'date', 'complete_time']
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
-        # model = model
-        fields = ['name', 'description', 'priority', 'complete']
+        model = Task
+        fields = ['name', 'description', 'date', 'completed_time',
+                  'is_urgent', 'is_important', 'due_date', 'user']
 
 class JournalSerializer(serializers.ModelSerializer):
     class Meta:
-        # model = model
-        fields = ['title', 'date', 'entry']
+        model = Journal
+        fields = ['entry', 'date', 'time_updated', 'user']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
