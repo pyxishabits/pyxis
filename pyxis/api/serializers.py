@@ -16,7 +16,7 @@ class HabitTaskSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         # model = model
-        fields = ['name', 'description', 'complete']
+        fields = ['name', 'description', 'priority', 'complete']
 
 class JournalSerializer(serializers.ModelSerializer):
     class Meta:

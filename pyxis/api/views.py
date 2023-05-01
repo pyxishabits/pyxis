@@ -1,10 +1,10 @@
 from rest_framework import generics
-from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 #from app.models import model
 from django.contrib.auth.models import User
-from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer
+from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
+import datetime
 
 class HabitView(generics.ListAPIView):
     serializer_class = HabitSerializer
@@ -15,11 +15,17 @@ class HabitView(generics.ListAPIView):
 
     # def get_queryset(self):
     #     user = self.request.user
-    #     return Habit.objects.filter(user=user)
+    #     user_habits = Habit.objects.filter(user=user)
+    #     today = datetime.date.today()  # 2023-05-01 format
+    #     return user_habits.filter(schedule=today)
 
 class HabitDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HabitSerializer
     # queryset = Habit.objects.all()
+
+class HabitTaskView(generics.ListAPIView):
+    serializer_class = HabitTaskSerializer
+    # queryset = HabitTask.objects.all()
 
 class TaskView(generics.ListAPIView):
     serializer_class = TaskSerializer
