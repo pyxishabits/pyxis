@@ -72,9 +72,7 @@ new Vue({
         isToday(day) {
             if (day.name === this.today) {
                     return true
-            } else {
-                    return false
-            }
+            } 
         }
     },
     computed: {

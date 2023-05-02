@@ -17,6 +17,8 @@
     linear-gradient(45deg, var(--subtle-accent) 25%, transparent 25%);
     background-size: 200px 200px;
     background-color: var(--main-color);
+
+    transition: all 0.5s;
 }
 
 :root:has(#light:checked) {
@@ -81,7 +83,7 @@ h3 {
     display: flex;
     justify-content: space-around;
     padding: min(1.5em, 5vh);
-    gap: 1px
+    gap: 5px
 }
 
 .weekday {
@@ -91,7 +93,7 @@ h3 {
     width: max(60px, 12em);
     height: 80px;
     border: 1px solid var(--dark-accent);
-    border-radius: 2px;
+    border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,12 +123,13 @@ h3 {
     padding: 0.5em;
 
     overflow: hidden;
-
-    transition: all 0.5s;
+    transition: height 0.5s;
 }
 
 .activeTab {
-    height: fit-content;
+    height: 400px;
+    min-height: fit-content;
+    overflow: hidden scroll;
     z-index: 3;
 }
 
@@ -136,7 +139,7 @@ h3 {
 }
 
 .preview {
-    height: 50%;
+    height: 40%;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -149,6 +152,21 @@ h3 {
 
 .full {
     padding-left: min(2em, 20%);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--main-transparent);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--light-accent);
+    border-radius: 5px;
+}
+  ::-webkit-scrollbar-corner {
+    background: var(--main-transparent);
+    border-radius: 7px;
 }
 
 .sr-hidden {

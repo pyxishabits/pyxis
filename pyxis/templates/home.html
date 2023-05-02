@@ -14,7 +14,6 @@
     <script src="{% static 'js/app.js' %}" defer></script>
 
     <title>{% block title %}Pyxis Home{% endblock %}</title>
-
 </head>
 
 <body>
@@ -56,17 +55,20 @@
                     :class="{selectDay:isToday(day)}">
                     [[ day.abbrv ]]
                 </div>
-                <!-- TODO: class is dynamic, but is PRETTY SLOW.-->
+                <!-- TODO: class is dynamic, but is slow?-->
+                <!-- seemingly might not render without Vue tab on devtools??? -->
+                <!-- TODO: once planning per day is implemented- default is Today, reactive to selected -->
             </nav>
         </header>
 
         <div id="wrapper">
-            <!-- TODO: preview hooks vs expanded hooks -->
+            <!-- TODO: refine preview content for unauthenticated -->
             {% block content %}
             <div id="habits" class="main" 
                 :class="[{activeTab: activeHabits}, {inactiveTab: activeTasks || activeJournal }]" 
                 @click="activeHabits = !activeHabits">
                 <h3>TODAY'S HABITS</h3>
+                <!-- TODO: conditional from "today" to selected day of the week -->
                 {% if user.is_authenticated %}
                 <div v-if="!activeHabits" class="preview">
                     <div v-for="h in habitsPreview">
@@ -80,14 +82,33 @@
                     </dl>
                 </div>
                 {% else %}
+                <div v-if="!activeHabits" class="preview">
+                    <div>THING</div>
+                    <div>THING</div>
+                    <div>THING</div>
+                </div>
+                <div v-if="activeHabits" class="full">
+                    <dl>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                    </dl>
+                </div>
                 <p>Sign up and get started!</p>
-                <!-- TODO? create placeholder displays for unauthenticated viewers?? -->
                 {% endif %}
             </div>
             <div id="tasks" class="main" 
                 :class="[{activeTab: activeTasks}, {inactiveTab: activeHabits || activeJournal }]"
                 @click="activeTasks = !activeTasks">
                 <h3>TODAY'S TASKS</h3>
+                {% if user.is_authenticated %}
                 <div v-if="!activeTasks" class="preview">
                     <div v-for="h in habitsPreview">
                         [[ h.name ]]
@@ -99,11 +120,34 @@
                         <dd>[[ h.description ]]</dd>
                     </dl>
                 </div>
+                {% else %}
+                <div v-if="!activeTasks" class="preview">
+                    <div>THING</div>
+                    <div>THING</div>
+                    <div>THING</div>
+                </div>
+                <div v-if="activeTasks" class="full">
+                    <dl>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                        <dt>THING</dt>
+                        <dd>all about thing</dd>
+                    </dl>
+                </div>
+                <p>Sign up and get started!</p>
+                {% endif %}
             </div>
             <div id="journal" class="main" 
                 :class="[{activeTab: activeJournal}, {inactiveTab: activeHabits || activeTasks }]"
                 @click="activeJournal = !activeJournal">
                 <h3>JOURNAL</h3>
+                {% if user.is_authenticated %}
                 <div v-if="!activeJournal">
                     Most recent Journal Day, prev first 3 lines
                 </div>
@@ -143,6 +187,9 @@
                         Consectetur a erat nam at lectus urna. Velit laoreet id donec 
                         ultrices. Fusce id velit ut tortor. 
                     </p>
+                    {% else %}
+                    <p>Sign up and get started!</p>
+                    {% endif %}
                 </div>
             </div>
             {% endblock %}
