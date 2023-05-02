@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,8 +14,9 @@
     <script src="{% static 'js/app.js' %}" defer></script>
 
     <title>{% block title %}Pyxis Home{% endblock %}</title>
-    
+
 </head>
+
 <body>
     <div id="app">
         {% csrf_token %}
@@ -28,7 +30,7 @@
                         <label for="theme" class="sr-hidden">Light</label>
                         <input type="radio" name="theme" id="light">
                     </fieldset>
-                </form> 
+                </form>
                 {% block authcontent %}
                 {% if user.is_authenticated %}
                 <div class="greeting">
@@ -50,31 +52,13 @@
             </div>
 
             <nav id="weekly-view">
-                <div id="sunday" class="weekday">
-                    S
+                <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday">
+                    [[ day.abbrv ]]
                 </div>
-                <div id="monday" class="weekday select-day">
-                    <!-- TODO: use vue dynamic class toggle to identify current day of week on mount -->
-                    M
-                </div>
-                <div id="tuesday" class="weekday">
-                    T     
-                </div>
-                <div id="wednesday" class="weekday">
-                    W
-                </div>
-                <div id="thursday" class="weekday">
-                    T   
-                </div>
-                <div id="friday" class="weekday">
-                    F  
-                </div>
-                <div id="saturday" class="weekday">
-                    S 
-                </div>
+                <!-- TODO: use vue dynamic class toggle to identify current day of week on mount -->
             </nav>
         </header>
-        
+
         <div id="wrapper">
             <!-- TODO: preview hooks vs expanded hooks -->
             {% block content %}
@@ -98,7 +82,8 @@
             </div>
             {% endblock %}
         </div>
-        
+
     </div>
 </body>
+
 </html>

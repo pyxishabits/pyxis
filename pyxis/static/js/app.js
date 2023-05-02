@@ -6,14 +6,22 @@ new Vue({
         habits: {},
         tasks: {},
         journalEntries: {},
-        currentWeekday: ''
+        daysOfTheWeek: {
+            0: { name: 'sunday', abbrv: 'S' },
+            1: { name: 'monday', abbrv: 'M' },
+            2: { name: 'tuesday', abbrv: 'T' },
+            3: { name: 'wednesday', abbrv: 'W' },
+            4: { name: 'thursday', abbrv: 'T' },
+            5: { name: 'friday', abbrv: 'F' },
+            6: { name: 'saturday', abbrv: 'S' },
+        }
     },
     methods: {
         getHabits() {
             axios.get('api/habits')
-            .then(response => {
-                this.habits = response.data
-            })
+                .then(response => {
+                    this.habits = response.data
+                })
         },
         editHabit() {
 
