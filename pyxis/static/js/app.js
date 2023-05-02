@@ -69,11 +69,6 @@ new Vue({
         getJournals() {
 
         },
-        isToday(day) {
-            if (day.name === this.today) {
-                    return true
-            } 
-        }
     },
     computed: {
         todayWeekday() {

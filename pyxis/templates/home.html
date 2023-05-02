@@ -52,11 +52,9 @@
 
             <nav id="weekly-view">
                 <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" 
-                    :class="{selectDay:isToday(day)}">
+                    :class="{selectDay:todayWeekday === day.name}">
                     [[ day.abbrv ]]
                 </div>
-                <!-- TODO: class is dynamic, but is slow?-->
-                <!-- seemingly might not render without Vue tab on devtools??? -->
                 <!-- TODO: once planning per day is implemented- default is Today, reactive to selected -->
             </nav>
         </header>
