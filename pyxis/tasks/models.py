@@ -26,9 +26,9 @@ class HabitTask(models.Model):
 class Task(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, null=True, blank=True)
-    date = models.DateTimeField()
+    date = models.DateField()
     completed_time = models.DateTimeField(null=True, blank=True)
-    is_urgent = models.BooleanField(default=False)
+    is_urgent = models.BooleanField(default=False) 
     is_important = models.BooleanField(default=False)
     due_date = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
