@@ -1,21 +1,32 @@
 :root {
     --main-color: #1b1b1b;
-    --text-color: #d6c5d4;
+    --main-transparent: #1b1b1bde;
+    --text-color: #c5ced6;
     --light-accent: #8b8b8b;
     --dark-accent: #3d3d3d;
-    --color-accent: #df5bc2;
+    --color-accent: #5bc0df;
+    --subtle-accent: #212f33;
 
-    background-color: var(--main-color);
+    /* background-color: var(--main-color); */
     font-family: sans-serif;
     color: var(--text-color);
+
+    background: linear-gradient(135deg, var(--subtle-accent) 25%, transparent 25%) 30px 0,
+    linear-gradient(225deg, var(--subtle-accent) 25%, transparent 25%) 30px 0,
+    linear-gradient(315deg, var(--subtle-accent) 25%, transparent 25%),
+    linear-gradient(45deg, var(--subtle-accent) 25%, transparent 25%);
+    background-size: 200px 200px;
+    background-color: var(--main-color);
 }
 
 :root:has(#light:checked) {
     --main-color: #ced8dd;
+    --main-transparent: #ced8ddde;
     --text-color: #0f1222;
     --light-accent: #fafafa;
     --dark-accent: #5a687c;
     --color-accent: #1a6496;
+    --subtle-accent: #7facca;
 }
 
 body {
@@ -28,7 +39,13 @@ a {
     text-decoration: none;
 }
 
+h3 {
+    color: var(--color-accent);
+}
+
 #user-info {
+    background: var(--main-color);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -68,6 +85,9 @@ a {
 }
 
 .weekday {
+    background-color: var(--main-transparent);
+    backdrop-filter: blur(8px);
+
     width: max(60px, 12em);
     height: 80px;
     border: 1px solid var(--dark-accent);
@@ -77,8 +97,9 @@ a {
     align-items: center;
 }
 
-.select-day {
+.selectDay {
     background-color: var(--color-accent);
+    color: var(--main-color)
 }
 
 #wrapper {
@@ -87,14 +108,47 @@ a {
     justify-content: space-between;
     align-items: center;
     gap: 0.5em;
+    padding-bottom: 3em;
 }
 
 .main { 
+    background: var(--main-transparent);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--dark-accent);
     border-radius: 5px;
     width: 80vw;
     height: 150px;
     padding: 0.5em;
+
+    overflow: hidden;
+
+    transition: all 0.5s;
+}
+
+.activeTab {
+    height: fit-content;
+    z-index: 3;
+}
+
+.inactiveTab {
+    height: 1px;
+    padding: 0;
+}
+
+.preview {
+    height: 50%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.preview > div {
+    width: 6em;
+    text-align: center;
+}
+
+.full {
+    padding-left: min(2em, 20%);
 }
 
 .sr-hidden {
