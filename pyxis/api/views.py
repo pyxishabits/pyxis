@@ -48,11 +48,10 @@ class DoneTask(generics.UpdateAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
     
-
-    def partial_update(self, serializer):
+    def perform_update(self, serializer):
         task = Task.objects.get(pk = self.kwargs['pk'])
         
-        if task.completed_time():
+        if task.completed_time is None:
             serializer.save(completed_time = timezone.now())
         else:
             serializer.save(completed_time = None)
