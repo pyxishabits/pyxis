@@ -9,8 +9,10 @@
 
     font-family: sans-serif;
     color: var(--text-color);
+    overflow-x: hidden;
 
-    background: linear-gradient(135deg, var(--subtle-accent), var(--main-color));
+    background: linear-gradient(180deg, var(--subtle-accent), var(--main-color));
+    background-repeat: no-repeat;
     background-color: var(--main-color);
 
     transition: all 0.5s;
@@ -37,6 +39,7 @@ a {
 }
 
 h3 {
+    margin-top: 0.7em;
     color: var(--color-accent);
     font-family: 'Bebas Neue', cursive;
     font-size: 18pt;
@@ -58,7 +61,7 @@ h3 {
 .theme-picker > fieldset {
     border: 0;
     display: flex;
-    background-color: var(--dark-accent);
+    background-color: var(--subtle-accent);
     border-radius: 0 0 4px 4px;
 }
 
@@ -158,6 +161,40 @@ h3 {
 
     overflow: hidden;
     transition: height 0.5s;
+
+    display: grid;
+    grid-template-rows: 3em auto;
+    grid-template-areas: 
+        'title title add'
+        'show show add';
+}
+
+.title {
+    grid-area: title;
+}
+
+.show-entry {
+    grid-area: show;
+}
+
+.add-entry {
+    grid-area: add;
+    text-align: end;
+    margin: 0.3em;
+}
+
+.add-button {
+    border: 2px solid var(--dark-accent);
+    border-radius: 3px;
+    background-color: var(--main-color);
+    color: var(--text-color);
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+}
+
+.add-button:active {
+    background-color: var(--subtle-accent);
 }
 
 .inactiveTab {
@@ -166,7 +203,7 @@ h3 {
 }
 
 .inactiveTab h3 {
-    margin: 0.5em;
+    margin: 0.5em 0.5em 1em;
 }
 
 .activeTab {

@@ -75,8 +75,8 @@ new Vue({
 
         },
         // TODO: pass task object in as param
-        updateTask() {
-            axios.patch(`/api/tasks/1/done/`,{},  
+        updateTask(id) {
+            axios.patch(`/api/tasks/${id}/done/`,{},  
                 { headers: {'X-CSRFToken': this.token }}
             ).then(() => this.getTodayTasks())
         },
@@ -127,8 +127,7 @@ new Vue({
         },
     },
     mounted() {
-        this.previewHabit()
-        this.getHabits()
+        this.getTodayTasks()
         this.getWeek()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
