@@ -3,6 +3,7 @@ new Vue({
     delimiters: ['[[', ']]'],
     data: {
         token: '',
+        currentUser: '',
         habits: {},
         habitsPreview: {},
         tasks: {},
@@ -23,46 +24,33 @@ new Vue({
         changeWeekNext: false,
         changeWeekPrev: false,
         weekStart: '',
-        weekEnd: ''
+        weekEnd: '',
+        addTaskWindow: false,
+        newTaskName: '',
+        newTaskDesc: '',
+        newTaskUrgent: false,
+        newTaskImportant: false,
+        newTaskDue: null,
     },
     methods: {
+        getUser() {
+            axios.get('/api/').then(res => this.currentUser = res.data.id)
+        },
         getHabits() {
             // axios.get('api/habits')
             //     .then(response => {
             //         this.habits = response.data
             //     })
-            this.habits = [
-                {name: 'Walk dog',
-                description: 'needs to be done!',
-                recurrence: '[0,2,3,4]',
-                user: 'liamdes'},
-                {name: 'Make Breakfast',
-                description: 'eat every day',
-                recurrence: '[0,1,2,3,4,5,6]',
-                user: 'liamdes'},
-                {name: 'Take Nap',
-                description: 'catch up on sleep :)',
-                recurrence: '[1,3,5]',
-                user: 'liamdes'},
-                {name: 'Exercise',
-                description: 'doesn\'t need to be done that often',
-                recurrence: '[0]',
-                user: 'liamdes'},
-                {name: 'Grocery Shop',
-                description: 'cannot do a lot without this',
-                recurrence: '[6]',
-                user: 'liamdes'},
-            ]
         },
         previewHabit() {
             // retrieve just first X number of habits for the day
             // if len of habits exceeds X, add a "More..." to end of list
-            this.habitsPreview = [
-                {name: 'Walk Dog'},
-                {name: 'Make Breakfast'},
-                {name: 'Take Nap'},
-                {name: 'More...'}
-            ]
+            // this.habitsPreview = [
+            //     {name: 'Walk Dog'},
+            //     {name: 'Make Breakfast'},
+            //     {name: 'Take Nap'},
+            //     {name: 'More...'}
+            // ]
         },
         editHabit() {
 
@@ -72,17 +60,39 @@ new Vue({
             .then(response => {
                 this.tasks = response.data
             })
-
         },
-        // TODO: pass task object in as param
         updateTask(id) {
             axios.patch(`/api/tasks/${id}/done/`,{},  
                 { headers: {'X-CSRFToken': this.token }}
             ).then(() => this.getTodayTasks())
         },
-
+        addTask() {
+            axios.post(`api/tasks/new/`, {
+                "name": this.newTaskName,
+                "description": this.newTaskDesc,
+                "date": this.newDate(),
+                "completed_time": null,
+                "is_urgent": this.newTaskUrgent,
+                "is_important": this.newTaskImportant,
+                "due_date": this.newTaskDue,
+                "user": this.currentUser
+            }, {headers: {'X-CSRFToken': this.token }})
+            .then(() => this.getTodayTasks())
+            this.addTaskWindow = false,
+            this.newTaskName = '',
+            this.newTaskDesc = '',
+            this.newTaskUrgent = false,
+            this.newTaskImportant = false,
+            this.newTaskDue = null
+        },
+        newDate() {
+            const newDate = new Date()
+            let jsonDate = newDate.toJSON()
+            let dateQuery = jsonDate.slice(0, 10)
+            return dateQuery
+        },
         getJournals() {
-
+            
         },
         weekNext() {
             this.changeWeekNext = true
@@ -127,6 +137,8 @@ new Vue({
         },
     },
     mounted() {
+        this.getUser()
+        this.getJournals()
         this.getTodayTasks()
         this.getWeek()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value

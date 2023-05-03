@@ -177,6 +177,22 @@ h3 {
     grid-area: show;
 }
 
+.add-window {
+    border: 1px solid var(--light-accent);
+    border-radius: 3px;
+    padding: 0.5em;
+    margin-left: 1.5em;
+    width: fit-content;
+}
+
+[name=taskname] {
+    width: 10em;
+}
+
+.input {
+    padding: 0.3em 0;
+}
+
 .add-entry {
     grid-area: add;
     text-align: end;

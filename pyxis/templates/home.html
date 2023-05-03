@@ -36,14 +36,14 @@
                 {% block authcontent %}
                 {% if user.is_authenticated %}
                 <div class="greeting">
-                    <h2>Welcome, {{ user.username }}!</h2>
+                    <h2>{{ user.username }}</h2>
                 </div>
                 <div class="auth">
                     <a href="{% url 'logout' %}">LOGOUT</a>
                 </div>
                 {% else %}
                 <div class="greeting">
-                    <h2>Welcome, visitor!</h2>
+                    <h2>Welcome</h2>
                 </div>
                 <div class="auth">
                     <a href="{% url 'login' %}">Login</a> or
@@ -148,7 +148,31 @@
                         </div> -->
                     </div>
                     <div v-if="activeTasks" class="full">
-                        <dl v-for="t in tasks">
+                        <div v-if="addTaskWindow" class="add-window" @click.stop="activeTasks != activeTasks">
+                            <h4>New Task</h4>
+                            <div class="input">
+                                <label for="taskname">Name: </label>
+                                <input type="text" name="taskname" v-model="newTaskName">
+                            </div>
+                            <div class="input">
+                                <label for="taskdesc">Description: </label>
+                                <div>
+                                    <textarea name="taskdesc" rows="5" cols="25" v-model="newTaskDesc"></textarea>
+                                </div>
+                            </div>
+                            <div class="input">
+                                <label for="taskurgent">Urgent: </label>
+                                <input type="checkbox" name="taskurgent" v-model="newTaskUrgent">
+                                <label for="taskimportant">Important: </label>
+                                <input type="checkbox" name="taskimportant" v-model="newTaskImportant">
+                            </div>
+                            <div class="input">
+                                <label for="taskdue">Due: </label>
+                                <input type="date" name="taskdue" min="newDate" v-model="newTaskDue">
+                            </div>
+                            <button @click="addTask">Save</button>
+                        </div>
+                        <dl v-for="t in tasks" @click.stop="activeTasks != activeTasks">
                             <dt>
                                 <span v-if="!t.completed_time" @click="updateTask(t.id)">
                                     <i class="fa-regular fa-square"></i>
@@ -164,8 +188,8 @@
                     </div>
                 </div>
 
-                <div class="add-entry">
-                    <button class="add-button">
+                <div class="add-entry" @click="activeTasks">
+                    <button class="add-button" @click="addTaskWindow = !addTaskWindow">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
