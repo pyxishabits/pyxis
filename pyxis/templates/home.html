@@ -7,7 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+    </style>
+    <script src="https://kit.fontawesome.com/03c91ce9d4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -24,9 +27,9 @@
                 <form class="theme-picker">
                     <fieldset>
                         <legend class="sr-hidden">Themes</legend>
-                        <label for="theme" class="sr-hidden">Dark</label>
+                        <label for="dark" class="sr-hidden">Dark</label>
                         <input type="radio" name="theme" id="dark" checked>
-                        <label for="theme" class="sr-hidden">Light</label>
+                        <label for="light" class="sr-hidden">Light</label>
                         <input type="radio" name="theme" id="light">
                     </fieldset>
                 </form>
@@ -51,11 +54,18 @@
             </div>
 
             <nav id="weekly-view">
-                <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" 
-                    :class="{selectDay:todayWeekday === day.name}">
-                    [[ day.abbrv ]]
+                <div class="prev-week" @click="weekPrev">
+                    <i class="fa-solid fa-angles-left"></i>
                 </div>
-                <!-- TODO: once planning per day is implemented- default is Today, reactive to selected -->
+                    <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" 
+                        :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
+                        {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]"
+                        @click="today = day.name">
+                        [[ day.abbrv ]]
+                    </div>
+                <div class="next-week" @click="weekNext">
+                    <i class="fa-solid fa-angles-right"></i>
+                </div>
             </nav>
         </header>
 
@@ -65,8 +75,7 @@
             <div id="habits" class="main" 
                 :class="[{activeTab: activeHabits}, {inactiveTab: activeTasks || activeJournal }]" 
                 @click="activeHabits = !activeHabits">
-                <h3>TODAY'S HABITS</h3>
-                <!-- TODO: conditional from "today" to selected day of the week -->
+                <h3 v-if="today != ''">[[today]]'s habits</h3>
                 {% if user.is_authenticated %}
                 <div v-if="!activeHabits" class="preview">
                     <div v-for="h in habitsPreview">
@@ -102,11 +111,13 @@
                 <p>Sign up and get started!</p>
                 {% endif %}
             </div>
+
             <div id="tasks" class="main" 
                 :class="[{activeTab: activeTasks}, {inactiveTab: activeHabits || activeJournal }]"
                 @click="activeTasks = !activeTasks">
-                <h3>TODAY'S TASKS</h3>
+                <h3 v-if="today != ''">[[today]]'s tasks</h3>
                 {% if user.is_authenticated %}
+                <!-- TODO: load in tasks -->
                 <div v-if="!activeTasks" class="preview">
                     <div v-for="h in habitsPreview">
                         [[ h.name ]]

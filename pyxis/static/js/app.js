@@ -20,6 +20,8 @@ new Vue({
         activeHabits: false,
         activeTasks: false,
         activeJournal: false,
+        changeWeekNext: false,
+        changeWeekPrev: false,
     },
     methods: {
         getHabits() {
@@ -69,12 +71,26 @@ new Vue({
         getJournals() {
 
         },
+        weekNext() {
+            this.changeWeekNext = true
+            setTimeout(() => {
+            this.changeWeekNext = false
+            }, 1000)
+        },
+        weekPrev() {
+            this.changeWeekPrev = true
+            setTimeout(() => {
+            this.changeWeekPrev = false
+            }, 1000)
+        }
     },
     computed: {
         todayWeekday() {
             const todayDate = new Date
             const todayIndex = todayDate.getDate()
-            return this.today = this.daysOfTheWeek[todayIndex].name
+            if (this.today === '') {
+                return this.today = this.daysOfTheWeek[todayIndex].name
+            }
         },
     },
     mounted() {

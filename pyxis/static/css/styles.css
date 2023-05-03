@@ -43,6 +43,8 @@ a {
 
 h3 {
     color: var(--color-accent);
+    font-family: 'Bebas Neue', cursive;
+    font-size: 18pt;
 }
 
 #user-info {
@@ -84,6 +86,35 @@ h3 {
     justify-content: space-around;
     padding: min(1.5em, 5vh);
     gap: 5px
+}
+
+.prev-week, .next-week {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.weekahead {
+    animation-name: weekmove;
+    animation-duration: 1s;
+    overflow-x: hidden;
+}
+
+.weekbehind {
+    animation-name: weekmove;
+    animation-duration: 1s;
+    overflow-x: hidden;
+    animation-direction: reverse;
+}
+
+@keyframes weekmove {
+    50% {
+        transform: translateX(1000%);
+        filter: blur(2px);
+    }
+    51% {
+        transform: translateX(-1000%);
+    }
 }
 
 .weekday {
@@ -157,13 +188,16 @@ h3 {
 ::-webkit-scrollbar {
     width: 10px;
 }
+
 ::-webkit-scrollbar-track {
     background: var(--main-transparent);
 }
+
 ::-webkit-scrollbar-thumb {
-    background: var(--light-accent);
+    background: var(--subtle-accent);
     border-radius: 5px;
 }
+
   ::-webkit-scrollbar-corner {
     background: var(--main-transparent);
     border-radius: 7px;
