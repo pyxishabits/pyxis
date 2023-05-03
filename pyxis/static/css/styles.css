@@ -134,11 +134,13 @@ h3 {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    transition: all 300ms;
 }
 
 .selectDay {
     background-color: var(--color-accent);
-    color: var(--main-color)
+    color: var(--main-color);
 }
 
 #wrapper {
