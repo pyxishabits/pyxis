@@ -67,9 +67,20 @@ new Vue({
         editHabit() {
 
         },
-        getTasks() {
+        getTodayTasks() {
+            axios.get('api/tasks/')
+            .then(response => {
+                this.tasks = response.data
+            })
 
         },
+        // TODO: pass task object in as param
+        updateTask() {
+            axios.patch(`/api/tasks/1/done/`,{},  
+                { headers: {'X-CSRFToken': this.token }}
+            ).then(() => this.getTodayTasks())
+        },
+
         getJournals() {
 
         },
