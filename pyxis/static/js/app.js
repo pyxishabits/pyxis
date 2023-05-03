@@ -58,7 +58,7 @@ new Vue({
         getTodayTasks() {
             axios.get('api/tasks/')
             .then(response => {
-                this.tasks = response.data
+                this.tasks = response.data.reverse()
             })
         },
         updateTask(id) {
@@ -126,6 +126,10 @@ new Vue({
             this.weekStart = firstday
             this.weekEnd = lastday
         },
+        openTasks() {
+            this.addTaskWindow = !this.addTaskWindow
+            this.activeTasks = true
+        }
     },
     computed: {
         todayWeekday() {

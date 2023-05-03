@@ -132,10 +132,9 @@
             </div>
 
             <div id="tasks" class="main" 
-                :class="[{activeTab: activeTasks}, {inactiveTab: activeHabits || activeJournal }]"
-                @click="activeTasks = !activeTasks">
+                :class="[{activeTab: activeTasks}, {inactiveTab: activeHabits || activeJournal }]">
 
-                <div class="title">
+                <div class="title" @click="activeTasks = !activeTasks">
                     <h3 v-if="today != ''">[[today]]'s tasks</h3>
                 </div>
 
@@ -148,7 +147,7 @@
                         </div> -->
                     </div>
                     <div v-if="activeTasks" class="full">
-                        <div v-if="addTaskWindow" class="add-window" @click.stop="activeTasks != activeTasks">
+                        <div v-if="addTaskWindow" class="add-window">
                             <h4>New Task</h4>
                             <div class="input">
                                 <label for="taskname">Name: </label>
@@ -172,7 +171,7 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <dl v-for="t in tasks" @click.stop="activeTasks != activeTasks">
+                        <dl v-for="t in tasks">
                             <dt>
                                 <span v-if="!t.completed_time" @click="updateTask(t.id)">
                                     <i class="fa-regular fa-square"></i>
@@ -188,8 +187,8 @@
                     </div>
                 </div>
 
-                <div class="add-entry" @click="activeTasks">
-                    <button class="add-button" @click="addTaskWindow = !addTaskWindow">
+                <div class="add-entry">
+                    <button class="add-button" @click="openTasks">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
