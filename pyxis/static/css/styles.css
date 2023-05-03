@@ -81,6 +81,12 @@ h3 {
     background-color: var(--main-color);
 }
 
+#weekdates {
+    text-align: center;
+    font-size: 10pt;
+    padding-top: 1em;
+}
+
 #weekly-view {
     display: flex;
     justify-content: space-around;
@@ -98,13 +104,13 @@ h3 {
     animation-name: weekmove;
     animation-duration: 1s;
     overflow-x: hidden;
+    animation-direction: reverse;
 }
 
 .weekbehind {
     animation-name: weekmove;
     animation-duration: 1s;
     overflow-x: hidden;
-    animation-direction: reverse;
 }
 
 @keyframes weekmove {

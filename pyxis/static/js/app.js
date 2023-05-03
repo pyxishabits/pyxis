@@ -22,6 +22,8 @@ new Vue({
         activeJournal: false,
         changeWeekNext: false,
         changeWeekPrev: false,
+        weekStart: '',
+        weekEnd: ''
     },
     methods: {
         getHabits() {
@@ -76,13 +78,33 @@ new Vue({
             setTimeout(() => {
             this.changeWeekNext = false
             }, 1000)
+
+            let sun = new Date(this.weekStart)
+            let sat = new Date(this.weekEnd)
+            this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + 7).toDateString()
+            this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() + 7).toDateString()
         },
         weekPrev() {
             this.changeWeekPrev = true
             setTimeout(() => {
             this.changeWeekPrev = false
             }, 1000)
-        }
+
+            let sun = new Date(this.weekStart)
+            let sat = new Date(this.weekEnd)
+            this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() - 7).toDateString()
+            this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() - 7).toDateString()
+        },
+        getWeek() {
+            let curr = new Date
+            let first = curr.getDate() - curr.getDay()
+
+            let firstday = new Date(curr.setDate(first)).toDateString()
+            let lastday = new Date(curr.setDate((curr.getDate() - curr.getDay()) + 6)).toDateString()
+
+            this.weekStart = firstday
+            this.weekEnd = lastday
+        },
     },
     computed: {
         todayWeekday() {
@@ -96,6 +118,7 @@ new Vue({
     mounted() {
         this.previewHabit()
         this.getHabits()
+        this.getWeek()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
 })
