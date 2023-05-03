@@ -5,6 +5,7 @@ from tasks.models import *
 from django.utils import timezone
 from django.contrib.auth.models import User
 from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
+from datetime import datetime
 
 class HabitView(generics.ListAPIView):
     serializer_class = HabitSerializer
@@ -35,7 +36,7 @@ class TaskView(generics.RetrieveUpdateDestroyAPIView):
 class TaskToday(generics.ListAPIView):
      serializer_class = TaskSerializer
      def get_queryset(self):
-        return Task.objects.filter(date= timezone.now().date(), user = self.request.user )
+        return Task.objects.filter(date=timezone.now().date(), user=self.request.user )
      
 class CreateTask(generics.CreateAPIView):
     serializer_class = TaskSerializer
@@ -53,12 +54,31 @@ class DoneTask(generics.UpdateAPIView):
             serializer.save(completed_time = timezone.now())
         else:
             serializer.save(completed_time = None)
-    
 
 
-class JournalView(generics.ListAPIView):
+
+
+class CreateJournal(generics.CreateAPIView):
     serializer_class = JournalSerializer
-    # queryset = Journal.objects.all()
+    queryset = Journal.objects.all()
+
+class JournalView(generics.RetrieveAPIView):
+    serializer_class = JournalSerializer
+    lookup_field = 'date'
+
+    def get_queryset(self):
+        return Journal.objects.all()
+    #     date = datetime.strptime(self.kwargs['date'], '%Y-%m-%d')
+    #     return Journal.objects.filter(user=self.request.user, date=date)
+
+
+
+class JournalEdit(generics.UpdateAPIView):
+    serializer_class = JournalSerializer
+    queryset = Journal.objects.all()
+
+
+
 
 @api_view(['GET'])
 def current_user(request):
