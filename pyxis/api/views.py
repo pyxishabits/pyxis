@@ -56,29 +56,23 @@ class DoneTask(generics.UpdateAPIView):
             serializer.save(completed_time = None)
 
 
-
-
 class CreateJournal(generics.CreateAPIView):
     serializer_class = JournalSerializer
     queryset = Journal.objects.all()
 
-class JournalView(generics.RetrieveAPIView):
-    serializer_class = JournalSerializer
-    lookup_field = 'date'
 
-    def get_queryset(self):
-        return Journal.objects.all()
-    #     date = datetime.strptime(self.kwargs['date'], '%Y-%m-%d')
-    #     return Journal.objects.filter(user=self.request.user, date=date)
-
+@api_view(['GET'])
+def get_journal(request):
+    date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+    journal = Journal.objects.get(user=request.user, date=date)
+    serializer = JournalSerializer(journal)
+    return Response(serializer.data)
 
 
 class JournalEdit(generics.UpdateAPIView):
     serializer_class = JournalSerializer
     queryset = Journal.objects.all()
-
-
-
+    
 
 @api_view(['GET'])
 def current_user(request):
