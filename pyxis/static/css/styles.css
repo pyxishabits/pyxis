@@ -224,6 +224,23 @@ h3 {
     background-color: var(--subtle-accent);
 }
 
+.detail {
+    margin: 0.5em;
+    line-height: 1.3em;
+}
+
+.editfield {
+    background-color: var(--main-color);
+    color: var(--text-color);
+    margin: 0.3em;
+    border: 1px solid var(--light-accent);
+    border-radius: 3px;
+}
+
+.save {
+    margin: 0 0 0.5em 1em;
+}
+
 .inactiveTab {
     height: 3em;
     padding: 0;

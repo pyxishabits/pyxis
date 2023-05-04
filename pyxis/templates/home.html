@@ -174,19 +174,11 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <dl v-for="t in tasks">
-                            <dt>
-                                <span v-if="!t.completed_time" @click="updateTask(t.id)">
-                                    <i class="fa-regular fa-square"></i>
-                                </span>
-                                <span v-if="t.completed_time" @click="updateTask(t.id)">
-                                    <i class="fa-solid fa-square-check"></i>
-                                </span>
-                                [[ t.name ]] 
-                                <i class="fa-solid fa-pen-to-square" title="Edit"></i>
-                                <i class="fa-regular fa-trash-can" title="Delete" @click="deleteTask(t.id)"></i>
-                            </dt>
-                            <dd>[[ t.description ]]</dd>
+                        <dl>
+                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
+                        @edit="" @update="updateTask" @delete="deleteTask">
+
+                        </user-tasks>
                         </dl>
                     </div>
                 </div>

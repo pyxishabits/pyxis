@@ -31,7 +31,6 @@ new Vue({
         newTaskUrgent: false,
         newTaskImportant: false,
         newTaskDue: null,
-        editTaskName: ''
     },
     methods: {
         getUser() {
@@ -61,17 +60,8 @@ new Vue({
                 { headers: {'X-CSRFToken': this.token }}
             ).then(() => this.getTodayTasks())
         },
-        editTask(task) {
-            axios.patch(`api/tasks/${task.id}/`, {
-                "name": this.editTaskName,
-                "date": this.newDate(),
-                // optional if not everything edited???????
-            },  
-                { headers: {'X-CSRFToken': this.token }}
-            ).then(() => this.getTodayTasks())
-        },
         deleteTask(id) {
-            axios.delete(`api/tasks/${id}`, {
+            axios.delete(`api/tasks/${id}/`, {
             headers: {'X-CSRFToken': this.token }}).then(() => this.getTodayTasks())
         },
         addTask() {
@@ -157,4 +147,64 @@ new Vue({
         this.getWeek()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
+})
+
+
+Vue.component('UserTasks', {
+    template: `
+        <div>
+        <span v-if="!task.completed_time" @click="$emit('update', task.id)">
+            <i class="fa-regular fa-square"></i>
+        </span>
+        <span v-else-if="task.completed_time" @click="$emit('update', task.id)">
+            <i class="fa-solid fa-square-check"></i>
+        </span>
+        <span v-if="editing === null" class="name">[[ task.name ]]</span>
+        <span v-else-if="editing === task.id">
+            <input type="text" v-model="editTaskName" class="editfield">
+        </span>
+        <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle"></i>
+        <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
+            <div>
+                <span v-if="editing === null" class="detail">[[ task.description ]]</span>
+                <div v-else-if="editing === task.id">
+                <textarea :value="task.description" class="editfield"></textarea>
+                </div>
+            </div>
+            <button v-if="editing === task.id" @click="editTask" class="save">
+                <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        </div>
+        `,
+    props: {
+        task: Object,
+    },
+    delimiters: ['[[', ']]'],
+    data: () => {
+        return {
+            editing: null,
+            editTaskName: '',
+            editTaskDesc: '',
+        }
+    },
+    methods: {
+        editTask() {
+            axios.patch(`api/tasks/${this.task.id}/`, {
+                "name": this.editTaskName,
+                "description": this.editTaskDesc,
+            },  
+                { headers: {'X-CSRFToken': this.$parent.token }}
+            ).then(() => this.$parent.getTodayTasks())
+            this.editing = null
+        },
+        editToggle() {
+            if (this.editing === null) {
+                return this.editing = this.task.id
+            } else { return this.editing = null }
+        },
+    },
+    mounted() {
+        this.editTaskName = this.task.name
+        this.editTaskDesc = this.task.description
+    }
 })
