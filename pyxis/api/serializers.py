@@ -16,7 +16,8 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['name', 'description', 'date', 'completed_time',
-                  'is_urgent', 'is_important', 'due_date', 'user']
+                  'is_urgent', 'is_important', 'due_date', 'user',
+                  'id']
 
 class JournalSerializer(serializers.ModelSerializer):
     class Meta:
