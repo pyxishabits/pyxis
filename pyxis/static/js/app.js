@@ -7,7 +7,7 @@ new Vue({
         habits: {},
         habitsPreview: {},
         tasks: {},
-        journalEntries: {},
+        journalEntry: {},
         daysOfTheWeek: {
             0: { name: 'sunday', abbrv: 'S' },
             1: { name: 'monday', abbrv: 'M' },
@@ -26,11 +26,13 @@ new Vue({
         weekStart: '',
         weekEnd: '',
         addTaskWindow: false,
+        addJournalWindow: false, 
         newTaskName: '',
         newTaskDesc: '',
         newTaskUrgent: false,
         newTaskImportant: false,
         newTaskDue: null,
+        newJournal: '',
     },
     methods: {
         getUser() {
@@ -89,8 +91,21 @@ new Vue({
             let dateQuery = jsonDate.slice(0, 10)
             return dateQuery
         },
-        getJournals() {
-            
+        getJournal() {
+            let todayJournal = this.newDate()
+            axios.get('api/journal/', {
+                params: { date: todayJournal }})
+            .then(response => {
+                this.journalEntry = response.data
+            })
+        },
+        createJournal(journalID) {
+            axios.patch(`api/journal/${journalID}/edit/`, {
+                "entry": this.newJournal}, { headers: {'X-CSRFToken': this.token }})
+                .then(() => {
+                    this.getJournal()
+                    this.addJournalWindow = false
+                })
         },
         weekNext() {
             this.changeWeekNext = true
@@ -129,6 +144,12 @@ new Vue({
             this.activeTasks = true
             this.activeHabits = false
             this.activeJournal = false
+        },
+        openJournal() {
+            this.addJournalWindow = !this.addJournalWindow
+            this.activeTasks = false
+            this.activeHabits = false
+            this.activeJournal = true
         }
     },
     computed: {
@@ -142,7 +163,7 @@ new Vue({
     },
     mounted() {
         this.getUser()
-        this.getJournals()
+        this.getJournal()
         this.getTodayTasks()
         this.getWeek()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
@@ -250,5 +271,51 @@ Vue.component('UserTasks', {
     },
     updated() {
         this.dueDate()
+    }
+})
+
+Vue.component('DailyJournal', {
+    template: ` 
+        <div>
+            <strong>[[ journal.date ]]</strong>
+            <span><i class="fa-solid fa-pen-to-square" title="Edit" @click="editJournalToggle"></i></span>
+            
+            <p v-if="editJournal === null" class="detail descrip">
+                [[ journal.entry ]]
+            </p>
+            <p v-else-if="editJournal === journal.id">
+                <textarea v-model="editEntry" class="editfield" rows="10" cols="70"></textarea>
+            </p>
+            <button v-if="editJournal === journal.id" @click="updateJournal" class="save">
+                <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        </div>`,
+    props: {
+        journal: Object
+    },
+    delimiters: ['[[', ']]'],
+    data: () => {
+        return {
+            editJournal: null,
+            editEntry: '',
+        }
+    },
+    methods: {
+        editJournalToggle() {
+            if (this.editJournal === null) {
+                return this.editJournal = this.journal.id
+            } else { return this.editJournal = null }
+        },
+        updateJournal() {
+            axios.patch(`api/journal/${this.journal.id}/edit/`, 
+            {"entry": this.editEntry}, {headers: {'X-CSRFToken': this.$parent.token }})
+                .then(() => {
+                    this.$parent.getJournal()
+                    this.editJournal = null
+                })
+        }
+    },
+    mounted() {
+        this.editEntry = this.journal.entry
     }
 })

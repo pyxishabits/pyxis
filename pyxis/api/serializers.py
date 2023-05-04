@@ -22,7 +22,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class JournalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journal
-        fields = ['entry', 'date', 'time_updated', 'user']
+        fields = ['entry', 'date', 'time_updated', 'user', 'id']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
