@@ -171,6 +171,30 @@ Vue.component('UserTasks', {
                 <textarea v-model="editTaskDesc" class="editfield"></textarea>
                 </div>
             </div>
+            <div>
+                <span v-if="task.is_urgent">
+                    <span v-if="editing === null" class="detail">
+                        URGENT
+                    </span>
+                </span>
+                <span v-if="editing === task.id">
+                    Urgent: <input type="checkbox" v-model="editTaskUrgent">
+                </span>
+                <span v-if="task.is_important">
+                    <span v-if="editing === null" class="detail">
+                        IMPORTANT
+                    </span>
+                </span>
+                <span v-if="editing === task.id">
+                    Important: <input type="checkbox" v-model="editTaskImportant">
+                </span>
+            </div>
+            <div v-if="task.due_date">
+                <span v-if="editing === null" class="detail">Due: [[ dueDisplay ]]</span>
+                <span v-else-if="editing === task.id">
+                    <input type="date" v-model="editTaskDue" class="editfield">
+                </span>
+            </div> 
             <button v-if="editing === task.id" @click="editTask" class="save">
                 <i class="fa-solid fa-floppy-disk"></i>
             </button>
@@ -185,6 +209,10 @@ Vue.component('UserTasks', {
             editing: null,
             editTaskName: '',
             editTaskDesc: '',
+            dueDisplay: '',
+            editTaskDue: null,
+            editTaskUrgent: false,
+            editTaskImportant: false,
         }
     },
     methods: {
@@ -192,9 +220,12 @@ Vue.component('UserTasks', {
             axios.patch(`api/tasks/${this.task.id}/`, {
                 "name": this.editTaskName,
                 "description": this.editTaskDesc,
+                "due_date": this.editTaskDue,
+                "is_urgent": this.editTaskUrgent,
+                "is_important": this.editTaskImportant
             },  
                 { headers: {'X-CSRFToken': this.$parent.token }}
-            ).then(() => this.$parent.getTodayTasks())
+            ).then(() => { this.$parent.getTodayTasks() })
             this.editing = null
         },
         editToggle() {
@@ -202,9 +233,22 @@ Vue.component('UserTasks', {
                 return this.editing = this.task.id
             } else { return this.editing = null }
         },
+        dueDate() {
+            const newDate = new Date(this.task.due_date)
+            let jsonDate = newDate.toJSON()
+            let dateQuery = jsonDate.slice(0, 10)
+            this.dueDisplay = dateQuery
+        },
     },
     mounted() {
+        this.dueDate()
         this.editTaskName = this.task.name
         this.editTaskDesc = this.task.description
+        this.editTaskDue = this.task.due_date
+        this.editTaskUrgent = this.task.is_urgent
+        this.editTaskImportant = this.task.is_important
+    },
+    updated() {
+        this.dueDate()
     }
 })
