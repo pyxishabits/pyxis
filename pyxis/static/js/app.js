@@ -31,6 +31,7 @@ new Vue({
         newTaskUrgent: false,
         newTaskImportant: false,
         newTaskDue: null,
+        editTaskName: ''
     },
     methods: {
         getUser() {
@@ -45,12 +46,6 @@ new Vue({
         previewHabit() {
             // retrieve just first X number of habits for the day
             // if len of habits exceeds X, add a "More..." to end of list
-            // this.habitsPreview = [
-            //     {name: 'Walk Dog'},
-            //     {name: 'Make Breakfast'},
-            //     {name: 'Take Nap'},
-            //     {name: 'More...'}
-            // ]
         },
         editHabit() {
 
@@ -62,9 +57,22 @@ new Vue({
             })
         },
         updateTask(id) {
-            axios.patch(`/api/tasks/${id}/done/`,{},  
+            axios.patch(`api/tasks/${id}/done/`,{},  
                 { headers: {'X-CSRFToken': this.token }}
             ).then(() => this.getTodayTasks())
+        },
+        editTask(task) {
+            axios.patch(`api/tasks/${task.id}/`, {
+                "name": this.editTaskName,
+                "date": this.newDate(),
+                // optional if not everything edited???????
+            },  
+                { headers: {'X-CSRFToken': this.token }}
+            ).then(() => this.getTodayTasks())
+        },
+        deleteTask(id) {
+            axios.delete(`api/tasks/${id}`, {
+            headers: {'X-CSRFToken': this.token }}).then(() => this.getTodayTasks())
         },
         addTask() {
             axios.post(`api/tasks/new/`, {
@@ -129,6 +137,8 @@ new Vue({
         openTasks() {
             this.addTaskWindow = !this.addTaskWindow
             this.activeTasks = true
+            this.activeHabits = false
+            this.activeJournal = false
         }
     },
     computed: {

@@ -78,10 +78,12 @@
             {% block content %}
 
             <div id="habits" class="main" 
-                :class="[{activeTab: activeHabits}, {inactiveTab: activeTasks || activeJournal }]" 
-                @click="activeHabits = !activeHabits">
+                :class="[{activeTab: activeHabits}, 
+                {inactiveTab: activeTasks || activeJournal }]">
 
-                <h3 v-if="today != ''" class="title">[[today]]'s habits</h3>
+                <div class="title" @click="activeHabits = !activeHabits">
+                    <h3 v-if="today != ''">[[today]]'s habits</h3>
+                </div>
 
                 {% if user.is_authenticated %}
 
@@ -132,7 +134,8 @@
             </div>
 
             <div id="tasks" class="main" 
-                :class="[{activeTab: activeTasks}, {inactiveTab: activeHabits || activeJournal }]">
+                :class="[{activeTab: activeTasks}, 
+                {inactiveTab: activeHabits || activeJournal }]">
 
                 <div class="title" @click="activeTasks = !activeTasks">
                     <h3 v-if="today != ''">[[today]]'s tasks</h3>
@@ -181,6 +184,7 @@
                                 </span>
                                 [[ t.name ]] 
                                 <i class="fa-solid fa-pen-to-square" title="Edit"></i>
+                                <i class="fa-regular fa-trash-can" title="Delete" @click="deleteTask(t.id)"></i>
                             </dt>
                             <dd>[[ t.description ]]</dd>
                         </dl>
@@ -220,10 +224,12 @@
             </div>
 
             <div id="journal" class="main" 
-                :class="[{activeTab: activeJournal}, {inactiveTab: activeHabits || activeTasks }]"
-                @click="activeJournal = !activeJournal">
+                :class="[{activeTab: activeJournal}, 
+                {inactiveTab: activeHabits || activeTasks }]">
 
-                <h3 class="title">JOURNAL</h3>
+                <div class="title" @click="activeJournal = !activeJournal">
+                    <h3>JOURNAL</h3>
+                </div>
 
                 {% if user.is_authenticated %}
                 <div class="show-entry">

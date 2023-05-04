@@ -6,6 +6,7 @@
     --dark-accent: #3d3d3d;
     --color-accent: #5bc0df;
     --subtle-accent: #212f33;
+    --bold-header: #0f0f0f;
 
     font-family: sans-serif;
     color: var(--text-color);
@@ -26,6 +27,7 @@
     --dark-accent: #5a687c;
     --color-accent: #1a6496;
     --subtle-accent: #7facca;
+    --bold-header: #fcfcfc;
 }
 
 body {
@@ -39,7 +41,7 @@ a {
 }
 
 h3 {
-    margin-top: 0.7em;
+    margin: 0.7em 0 1em 0;
     color: var(--color-accent);
     font-family: 'Bebas Neue', cursive;
     font-size: 18pt;
@@ -157,20 +159,26 @@ h3 {
     border-radius: 5px;
     width: 80vw;
     height: 150px;
-    padding: 0.5em;
 
     overflow: hidden;
     transition: height 0.5s;
 
     display: grid;
-    grid-template-rows: 3em auto;
+    grid-template-rows: min-content auto;
+    grid-template-columns: auto auto 2em;
     grid-template-areas: 
         'title title add'
         'show show add';
 }
 
+.main>*{
+    padding: 0.5em;
+}
+
 .title {
     grid-area: title;
+    background-image: linear-gradient(45deg, var(--subtle-accent), transparent, transparent);
+    width: 100%;
 }
 
 .show-entry {
@@ -195,7 +203,8 @@ h3 {
 
 .add-entry {
     grid-area: add;
-    margin: 0.3em;
+    margin: 0 0.3em 1em 0.3em;
+    align-self: end;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
@@ -221,7 +230,8 @@ h3 {
 }
 
 .inactiveTab h3 {
-    margin: 0.5em 0.5em 1em;
+    padding: 0 0.5em 0 1em;
+    margin: 0;
 }
 
 .activeTab {
