@@ -3,7 +3,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from tasks.models import *
 from django.utils import timezone
-from django.contrib.auth.models import User
 from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
 from datetime import datetime
 
@@ -11,25 +10,29 @@ from datetime import datetime
 class HabitView(generics.ListAPIView):
     serializer_class = HabitSerializer
 
-    # queryset = Habit.objects.all()
-
-    # NEEDS EITHER ABOVE OR BELOW ^ v
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     user_habits = Habit.objects.filter(user=user)
-    #     today = datetime.date.today()  # 2023-05-01 format
-    #     return user_habits.filter(schedule=today)
+    def get_queryset(self):
+        return Habit.objects.filter(user=self.request.user)
 
 
 class HabitDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HabitSerializer
-    # queryset = Habit.objects.all()
+
+    def get_queryset(self):
+        return Habit.objects.filter(user=self.request.user)
+
+
+class CreateHabit(generics.CreateAPIView):
+    serializer_class = HabitSerializer
+    queryset = Habit.objects.all()
 
 
 class HabitTaskView(generics.ListAPIView):
     serializer_class = HabitTaskSerializer
     # queryset = HabitTask.objects.all()
+
+# return the days habits - will be similar to doneTask
+# make a 'create' endpoint
+# custom update to toggle done/or not
 
 
 class TaskView(generics.RetrieveUpdateDestroyAPIView):
