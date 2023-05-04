@@ -168,7 +168,7 @@ Vue.component('UserTasks', {
             <div>
                 <span v-if="editing === null" class="detail">[[ task.description ]]</span>
                 <div v-else-if="editing === task.id">
-                <textarea :value="task.description" class="editfield"></textarea>
+                <textarea v-model="editTaskDesc" class="editfield"></textarea>
                 </div>
             </div>
             <button v-if="editing === task.id" @click="editTask" class="save">
