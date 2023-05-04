@@ -55,13 +55,13 @@ new Vue({
                 this.tasks = response.data.reverse()
             })
         },
-        updateTask(id) {
-            axios.patch(`api/tasks/${id}/done/`,{},  
+        updateTask(taskID) {
+            axios.patch(`api/tasks/${taskID}/done/`,{},  
                 { headers: {'X-CSRFToken': this.token }}
             ).then(() => this.getTodayTasks())
         },
-        deleteTask(id) {
-            axios.delete(`api/tasks/${id}/`, {
+        deleteTask(taskID) {
+            axios.delete(`api/tasks/${taskID}/`, {
             headers: {'X-CSRFToken': this.token }}).then(() => this.getTodayTasks())
         },
         addTask() {
