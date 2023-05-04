@@ -3,7 +3,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from tasks.models import *
 from django.utils import timezone
-from django.contrib.auth.models import User
 from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
 from datetime import datetime
 
