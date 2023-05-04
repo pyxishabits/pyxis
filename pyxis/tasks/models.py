@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
-from datetime import datetime 
+from datetime import date
 
 class Habit(models.Model):
     name = models.CharField(max_length=50)
@@ -9,7 +9,7 @@ class Habit(models.Model):
     recurrence = models.CharField(
         validators=[validate_comma_separated_integer_list], max_length=14)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    start_date = models.DateField(default=datetime.date.today)
+    start_date = models.DateField(default=date.today)
     end_date = models.DateField(null=True, blank=True)
 
     def __str__(self) -> str:
