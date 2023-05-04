@@ -6,11 +6,14 @@
     --dark-accent: #3d3d3d;
     --color-accent: #5bc0df;
     --subtle-accent: #212f33;
+    --bold-header: #0f0f0f;
 
     font-family: sans-serif;
     color: var(--text-color);
+    overflow-x: hidden;
 
-    background: linear-gradient(135deg, var(--subtle-accent), var(--main-color));
+    background: linear-gradient(180deg, var(--subtle-accent), var(--main-color));
+    background-repeat: no-repeat;
     background-color: var(--main-color);
 
     transition: all 0.5s;
@@ -24,6 +27,7 @@
     --dark-accent: #5a687c;
     --color-accent: #1a6496;
     --subtle-accent: #7facca;
+    --bold-header: #fcfcfc;
 }
 
 body {
@@ -37,6 +41,7 @@ a {
 }
 
 h3 {
+    margin: 0.7em 0 1em 0;
     color: var(--color-accent);
     font-family: 'Bebas Neue', cursive;
     font-size: 18pt;
@@ -58,7 +63,7 @@ h3 {
 .theme-picker > fieldset {
     border: 0;
     display: flex;
-    background-color: var(--dark-accent);
+    background-color: var(--subtle-accent);
     border-radius: 0 0 4px 4px;
 }
 
@@ -154,10 +159,90 @@ h3 {
     border-radius: 5px;
     width: 80vw;
     height: 150px;
-    padding: 0.5em;
 
     overflow: hidden;
     transition: height 0.5s;
+
+    display: grid;
+    grid-template-rows: min-content auto;
+    grid-template-columns: auto auto 2em;
+    grid-template-areas: 
+        'title title add'
+        'show show add';
+}
+
+.main>*{
+    padding: 0.5em;
+}
+
+.title {
+    grid-area: title;
+    background-image: linear-gradient(45deg, var(--subtle-accent), transparent, transparent);
+    width: 100%;
+}
+
+.show-entry {
+    grid-area: show;
+}
+
+.add-window {
+    border: 1px solid var(--light-accent);
+    border-radius: 3px;
+    padding: 0.5em;
+    margin-left: 1.5em;
+    width: fit-content;
+}
+
+[name=taskname] {
+    width: 10em;
+}
+
+.input {
+    padding: 0.3em 0;
+}
+
+.add-entry {
+    grid-area: add;
+    margin: 0 0.3em 1em 0.3em;
+    align-self: end;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.add-button {
+    border: 2px solid var(--dark-accent);
+    border-radius: 3px;
+    background-color: var(--main-color);
+    color: var(--text-color);
+    position: sticky;
+    bottom: 1em;
+    right: 1em;
+}
+
+.add-button:active {
+    background-color: var(--subtle-accent);
+}
+
+.detail {
+    margin: 0.5em;
+    line-height: 1.3em;
+}
+
+.descrip {
+    white-space: pre;
+}
+
+.editfield {
+    background-color: var(--main-color);
+    color: var(--text-color);
+    margin: 0.3em;
+    border: 1px solid var(--light-accent);
+    border-radius: 3px;
+}
+
+.save {
+    margin: 0 0 0.5em 1em;
 }
 
 .inactiveTab {
@@ -166,7 +251,8 @@ h3 {
 }
 
 .inactiveTab h3 {
-    margin: 0.5em;
+    padding: 0 0.5em 0 1em;
+    margin: 0;
 }
 
 .activeTab {

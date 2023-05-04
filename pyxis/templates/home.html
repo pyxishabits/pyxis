@@ -36,14 +36,14 @@
                 {% block authcontent %}
                 {% if user.is_authenticated %}
                 <div class="greeting">
-                    <h2>Welcome, {{ user.username }}!</h2>
+                    <h2>{{ user.username }}</h2>
                 </div>
                 <div class="auth">
                     <a href="{% url 'logout' %}">LOGOUT</a>
                 </div>
                 {% else %}
                 <div class="greeting">
-                    <h2>Welcome, visitor!</h2>
+                    <h2>Welcome</h2>
                 </div>
                 <div class="auth">
                     <a href="{% url 'login' %}">Login</a> or
@@ -76,23 +76,40 @@
         <div id="wrapper">
             <!-- TODO: refine preview content for unauthenticated -->
             {% block content %}
+
             <div id="habits" class="main" 
-                :class="[{activeTab: activeHabits}, {inactiveTab: activeTasks || activeJournal }]" 
-                @click="activeHabits = !activeHabits">
-                <h3 v-if="today != ''">[[today]]'s habits</h3>
+                :class="[{activeTab: activeHabits}, 
+                {inactiveTab: activeTasks || activeJournal }]">
+
+                <div class="title" @click="activeHabits = !activeHabits">
+                    <h3 v-if="today != ''">[[today]]'s habits</h3>
+                </div>
+
                 {% if user.is_authenticated %}
-                <div v-if="!activeHabits" class="preview">
-                    <div v-for="h in habitsPreview">
-                        [[ h.name ]]
+
+                <div class="show-entry">
+                    <div v-if="!activeHabits" class="preview">
+                        <div v-for="h in habitsPreview">
+                            [[ h.name ]]
+                        </div>
+                    </div>
+
+                    <div v-if="activeHabits" class="full">
+                        <dl v-for="h in habits">
+                            <dt>[[ h.name ]]</dt>
+                            <dd>[[ h.description ]]</dd>
+                        </dl>
                     </div>
                 </div>
-                <div v-if="activeHabits" class="full">
-                    <dl v-for="h in habits">
-                        <dt>[[ h.name ]]</dt>
-                        <dd>[[ h.description ]]</dd>
-                    </dl>
+
+                <div class="add-entry">
+                    <button class="add-button">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                 </div>
+
                 {% else %}
+
                 <div v-if="!activeHabits" class="preview">
                     <div>THING</div>
                     <div>THING</div>
@@ -117,93 +134,143 @@
             </div>
 
             <div id="tasks" class="main" 
-                :class="[{activeTab: activeTasks}, {inactiveTab: activeHabits || activeJournal }]"
-                @click="activeTasks = !activeTasks">
-                <h3 v-if="today != ''">[[today]]'s tasks</h3>
+                :class="[{activeTab: activeTasks}, 
+                {inactiveTab: activeHabits || activeJournal }]">
+
+                <div class="title" @click="activeTasks = !activeTasks">
+                    <h3 v-if="today != ''">[[today]]'s tasks</h3>
+                </div>
+
                 {% if user.is_authenticated %}
-                <!-- TODO: load in tasks -->
-                <div v-if="!activeTasks" class="preview">
-                    <div v-for="h in habitsPreview">
-                        [[ h.name ]]
+
+                <div class="show-entry">
+                    <div v-if="!activeTasks" class="preview">
+                        <!-- <div v-for="t in taskPreview">
+                            [[ t.name ]]
+                        </div> -->
+                    </div>
+                    <div v-if="activeTasks" class="full">
+                        <div v-if="addTaskWindow" class="add-window">
+                            <h4>New Task</h4>
+                            <div class="input">
+                                <label for="taskname">Name: </label>
+                                <input type="text" name="taskname" v-model="newTaskName">
+                            </div>
+                            <div class="input">
+                                <label for="taskdesc">Description: </label>
+                                <div>
+                                    <textarea name="taskdesc" rows="5" cols="25" v-model="newTaskDesc"></textarea>
+                                </div>
+                            </div>
+                            <div class="input">
+                                <label for="taskurgent">Urgent: </label>
+                                <input type="checkbox" name="taskurgent" v-model="newTaskUrgent">
+                                <label for="taskimportant">Important: </label>
+                                <input type="checkbox" name="taskimportant" v-model="newTaskImportant">
+                            </div>
+                            <div class="input">
+                                <label for="taskdue">Due: </label>
+                                <input type="date" name="taskdue" min="newDate" v-model="newTaskDue">
+                            </div>
+                            <button @click="addTask">Save</button>
+                        </div>
+                        <dl>
+                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
+                        @edit="" @update="updateTask" @delete="deleteTask">
+
+                        </user-tasks>
+                        </dl>
                     </div>
                 </div>
-                <div v-if="activeTasks" class="full">
-                    <dl v-for="h in habits">
-                        <dt>[[ h.name ]]</dt>
-                        <dd>[[ h.description ]]</dd>
-                    </dl>
+
+                <div class="add-entry">
+                    <button class="add-button" @click="openTasks">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                 </div>
                 {% else %}
-                <div v-if="!activeTasks" class="preview">
-                    <div>THING</div>
-                    <div>THING</div>
-                    <div>THING</div>
+                <div class="show-entry">
+                    <div v-if="!activeTasks" class="preview">
+                        <div>THING</div>
+                        <div>THING</div>
+                        <div>THING</div>
+                    </div>
+                    <div v-if="activeTasks" class="full">
+                        <dl>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                        </dl>
+                        <p>Sign up and get started!</p>
+                    </div>
                 </div>
-                <div v-if="activeTasks" class="full">
-                    <dl>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                    </dl>
-                </div>
-                <p>Sign up and get started!</p>
                 {% endif %}
+
             </div>
+
             <div id="journal" class="main" 
-                :class="[{activeTab: activeJournal}, {inactiveTab: activeHabits || activeTasks }]"
-                @click="activeJournal = !activeJournal">
-                <h3>JOURNAL</h3>
+                :class="[{activeTab: activeJournal}, 
+                {inactiveTab: activeHabits || activeTasks }]">
+
+                <div class="title" @click="activeJournal = !activeJournal">
+                    <h3>JOURNAL</h3>
+                </div>
+
                 {% if user.is_authenticated %}
-                <div v-if="!activeJournal">
-                    Most recent Journal Day, prev first 3 lines
+                <div class="show-entry">
+                    <div v-if="!activeJournal">
+                        Most recent Journal Day, prev first 3 lines
+                    </div>
+                    <div v-if="activeJournal">
+                        <h5>DATE OF ENTRY</h5>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                            sed do eiusmod tempor incididunt ut labore et dolore magna 
+                            aliqua. Lectus quam id leo in vitae turpis massa sed elementum. 
+                            Id faucibus nisl tincidunt eget nullam non nisi est. 
+                            Amet nisl suscipit adipiscing bibendum est. Iaculis urna 
+                            id volutpat lacus. Eu turpis egestas pretium aenean pharetra 
+                            magna ac placerat. Nibh sed pulvinar proin gravida. Gravida 
+                            neque convallis a cras semper. Non quam lacus suspendisse 
+                            faucibus interdum. At consectetur lorem donec massa sapien 
+                            faucibus et. Placerat in egestas erat imperdiet sed euismod 
+                            nisi porta lorem. Integer eget aliquet nibh praesent tristique
+                            magna sit amet purus. Nisi est sit amet facilisis magna etiam. 
+                            Congue eu consequat ac felis donec et. 
+                            Rutrum tellus pellentesque eu tincidunt tortor aliquam nulla. 
+                            Urna id volutpat lacus laoreet. Arcu odio ut sem nulla.
+                        </p>
+                        <p>
+                            Morbi leo urna molestie at elementum. 
+                            Id aliquet lectus proin nibh nisl. 
+                            Sed adipiscing diam donec adipiscing tristique risus nec 
+                            feugiat. Porttitor rhoncus dolor purus non enim. Proin nibh 
+                            nisl condimentum id venenatis a condimentum vitae sapien. 
+                            Porttitor eget dolor morbi non arcu risus quis. Commodo sed 
+                            egestas egestas fringilla phasellus faucibus scelerisque 
+                            eleifend. Vulputate sapien nec sagittis aliquam. Ut ornare 
+                            lectus sit amet est. Et tortor at risus viverra adipiscing at. 
+                            Donec massa sapien faucibus et. Morbi tristique senectus 
+                            et netus et malesuada fames ac turpis. Donec ac odio tempor 
+                            orci dapibus ultrices. Massa ultricies mi quis hendrerit 
+                            dolor. Sed velit dignissim sodales ut eu sem integer. 
+                            Consectetur a erat nam at lectus urna. Velit laoreet id donec 
+                            ultrices. Fusce id velit ut tortor. 
+                        </p>
+                    </div>
                 </div>
-                <div v-if="activeJournal">
-                    <h5>DATE OF ENTRY</h5>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                        sed do eiusmod tempor incididunt ut labore et dolore magna 
-                        aliqua. Lectus quam id leo in vitae turpis massa sed elementum. 
-                        Id faucibus nisl tincidunt eget nullam non nisi est. 
-                        Amet nisl suscipit adipiscing bibendum est. Iaculis urna 
-                        id volutpat lacus. Eu turpis egestas pretium aenean pharetra 
-                        magna ac placerat. Nibh sed pulvinar proin gravida. Gravida 
-                        neque convallis a cras semper. Non quam lacus suspendisse 
-                        faucibus interdum. At consectetur lorem donec massa sapien 
-                        faucibus et. Placerat in egestas erat imperdiet sed euismod 
-                        nisi porta lorem. Integer eget aliquet nibh praesent tristique
-                        magna sit amet purus. Nisi est sit amet facilisis magna etiam. 
-                        Congue eu consequat ac felis donec et. 
-                        Rutrum tellus pellentesque eu tincidunt tortor aliquam nulla. 
-                        Urna id volutpat lacus laoreet. Arcu odio ut sem nulla.
-                    </p>
-                    <p>
-                        Morbi leo urna molestie at elementum. 
-                        Id aliquet lectus proin nibh nisl. 
-                        Sed adipiscing diam donec adipiscing tristique risus nec 
-                        feugiat. Porttitor rhoncus dolor purus non enim. Proin nibh 
-                        nisl condimentum id venenatis a condimentum vitae sapien. 
-                        Porttitor eget dolor morbi non arcu risus quis. Commodo sed 
-                        egestas egestas fringilla phasellus faucibus scelerisque 
-                        eleifend. Vulputate sapien nec sagittis aliquam. Ut ornare 
-                        lectus sit amet est. Et tortor at risus viverra adipiscing at. 
-                        Donec massa sapien faucibus et. Morbi tristique senectus 
-                        et netus et malesuada fames ac turpis. Donec ac odio tempor 
-                        orci dapibus ultrices. Massa ultricies mi quis hendrerit 
-                        dolor. Sed velit dignissim sodales ut eu sem integer. 
-                        Consectetur a erat nam at lectus urna. Velit laoreet id donec 
-                        ultrices. Fusce id velit ut tortor. 
-                    </p>
-                    {% else %}
+                {% else %}
+                <div class="show-entry">
                     <p>Sign up and get started!</p>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
             {% endblock %}
         </div>
