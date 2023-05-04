@@ -8,6 +8,7 @@ new Vue({
         habitsPreview: {},
         tasks: {},
         journalEntry: {},
+        journalPrev: '',
         daysOfTheWeek: {
             0: { name: 'sunday', abbrv: 'S' },
             1: { name: 'monday', abbrv: 'M' },
@@ -97,6 +98,7 @@ new Vue({
                 params: { date: todayJournal }})
             .then(response => {
                 this.journalEntry = response.data
+                this.journalPreview()
             })
         },
         createJournal(journalID) {
@@ -106,6 +108,11 @@ new Vue({
                     this.getJournal()
                     this.addJournalWindow = false
                 })
+        },
+        journalPreview() {
+            const lineBreak = this.journalEntry.entry.split(/\r?\n/)
+            let firstLine = lineBreak[0]
+            this.journalPrev = firstLine
         },
         weekNext() {
             this.changeWeekNext = true

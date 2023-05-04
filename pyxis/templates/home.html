@@ -226,7 +226,7 @@
                 <div class="show-entry">
                     <div v-if="!activeJournal" class="preview">
                         <span v-if="!journalEntry.entry">You have no Journal for today yet!</span>
-                        <span v-else>Expand to view today's Journal</span>
+                        <span v-else>[[ journalPrev ]]</span>
                     </div>
 
                     <div v-if="activeJournal" class="full">
