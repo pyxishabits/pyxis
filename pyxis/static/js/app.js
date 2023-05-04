@@ -244,7 +244,7 @@ Vue.component('UserTasks', {
         this.dueDate()
         this.editTaskName = this.task.name
         this.editTaskDesc = this.task.description
-        this.editTaskDue = this.task.due_date
+        this.editTaskDue = this.dueDate()
         this.editTaskUrgent = this.task.is_urgent
         this.editTaskImportant = this.task.is_important
     },
