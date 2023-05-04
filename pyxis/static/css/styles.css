@@ -229,6 +229,10 @@ h3 {
     line-height: 1.3em;
 }
 
+.descrip {
+    white-space: pre;
+}
+
 .editfield {
     background-color: var(--main-color);
     color: var(--text-color);

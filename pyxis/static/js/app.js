@@ -166,7 +166,7 @@ Vue.component('UserTasks', {
         <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle"></i>
         <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
             <div>
-                <span v-if="editing === null" class="detail">[[ task.description ]]</span>
+                <span v-if="editing === null" class="detail descrip">[[ task.description ]]</span>
                 <div v-else-if="editing === task.id">
                 <textarea v-model="editTaskDesc" class="editfield"></textarea>
                 </div>
