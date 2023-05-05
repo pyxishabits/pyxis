@@ -61,12 +61,10 @@
                 <div class="prev-week" @click="weekPrev">
                     <i class="fa-solid fa-angles-left"></i>
                 </div>
-                    <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" 
-                        :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
-                        {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]"
-                        @click="today = day.name">
-                        [[ day.abbrv ]]
-                    </div>
+                <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
+                        {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="today = day.name">
+                    [[ day.abbrv ]]
+                </div>
                 <div class="next-week" @click="weekNext">
                     <i class="fa-solid fa-angles-right"></i>
                 </div>
@@ -77,8 +75,7 @@
             <!-- TODO: refine preview content for unauthenticated -->
             {% block content %}
 
-            <div id="habits" class="main" 
-                :class="[{activeTab: activeHabits}, 
+            <div id="habits" class="main" :class="[{activeTab: activeHabits}, 
                 {inactiveTab: activeTasks || activeJournal }]">
 
                 <div class="title" @click="activeHabits = !activeHabits">
@@ -95,15 +92,46 @@
                     </div>
 
                     <div v-if="activeHabits" class="full">
-                        <dl v-for="h in habits">
-                            <dt>[[ h.name ]]</dt>
-                            <dd>[[ h.description ]]</dd>
-                        </dl>
+                        <div v-if="addHabitWindow" class="add-window">
+                            <h4>New Habit</h4>
+                            <div class="input">
+                                <label for="habitname">Name: </label>
+                                <input type="text" name="habitname" v-model="newHabitName">
+                            </div>
+                            <div class="input">
+                                <label for="habitdesc">Description: </label>
+                                <div>
+                                    <textarea name="habitdesc" rows="5" cols="25" v-model="newHabitDesc"></textarea>
+                                </div>
+                            </div>
+                            <!-- TODO: get recurrence in here somehow -->
+                            <!-- <div class="input">
+                                <label for="habiturgent">Urgent: </label>
+                                <input type="checkbox" name="habiturgent" v-model="newHabitUrgent">
+                                <label for="habitimportant">Important: </label>
+                                <input type="checkbox" name="habitimportant" v-model="newHabitImportant">
+                            </div>
+                            <div class="input">
+                                <label for="habitdue">Due: </label>
+                                <input type="date" name="habitdue" min="newDate" v-model="newHabitDue">
+                            </div> -->
+                            <button @click="addHabit">Save</button>
+                        </div>
+
+                        <div v-for="habittaskmeta in todayHabitTaskData">
+                            <span @click="updateHabitTask(habittaskmeta)">
+                                <i v-if="habittaskmeta.habitTask && habittaskmeta.habitTask.completed_time"
+                                    class="fa-solid fa-square-check"></i>
+                                <i v-else class="fa-regular fa-square"></i>
+                            </span>
+                            <span>[[ habittaskmeta.name ]]</span>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="add-entry">
-                    <button class="add-button">
+                    <button class="add-button" @click="openHabits">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -133,8 +161,7 @@
                 {% endif %}
             </div>
 
-            <div id="tasks" class="main" 
-                :class="[{activeTab: activeTasks}, 
+            <div id="tasks" class="main" :class="[{activeTab: activeTasks}, 
                 {inactiveTab: activeHabits || activeJournal }]">
 
                 <div class="title" @click="activeTasks = !activeTasks">
@@ -175,8 +202,7 @@
                             <button @click="addTask">Save</button>
                         </div>
 
-                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
-                        @update="updateTask" @delete="deleteTask">
+                        <user-tasks v-for="t in tasks" :task="t" :key="t.id" @update="updateTask" @delete="deleteTask">
                         </user-tasks>
                     </div>
                 </div>
@@ -213,8 +239,7 @@
 
             </div>
 
-            <div id="journal" class="main" 
-                :class="[{activeTab: activeJournal}, 
+            <div id="journal" class="main" :class="[{activeTab: activeJournal}, 
                 {inactiveTab: activeHabits || activeTasks }]">
 
                 <div class="title" @click="activeJournal = !activeJournal">
@@ -234,15 +259,14 @@
                             <h4>New Journal</h4>
                             <div>
                                 <label for="new-journal"></label>
-                                <textarea name="new-journal" class="editfield" 
-                                rows="10" cols="70" v-model="newJournal"></textarea>
+                                <textarea name="new-journal" class="editfield" rows="10" cols="70"
+                                    v-model="newJournal"></textarea>
                             </div>
 
                             <button @click="createJournal(journalEntry.id)">Save</button>
                         </div>
 
-                        <daily-journal v-if="journalEntry.entry" :journal="journalEntry" 
-                        :key="journalEntry.id">
+                        <daily-journal v-if="journalEntry.entry" :journal="journalEntry" :key="journalEntry.id">
                         </daily-journal>
                     </div>
                 </div>

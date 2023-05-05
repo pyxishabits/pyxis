@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
 from datetime import date
 
+
 class Habit(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=150, null=True, blank=True)
