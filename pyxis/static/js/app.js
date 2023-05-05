@@ -116,8 +116,12 @@ new Vue({
 
             let sun = new Date(this.weekStart)
             let sat = new Date(this.weekEnd)
+            let curr = new Date(this.activeDate)
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() + 7).toDateString()
+            let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 8).toJSON() // why.
+            let dateQuery = jsonDate.slice(0, 10)
+            this.activeDate = dateQuery
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -127,8 +131,12 @@ new Vue({
 
             let sun = new Date(this.weekStart)
             let sat = new Date(this.weekEnd)
+            let curr = new Date(this.activeDate)
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() - 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() - 7).toDateString()
+            let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() - 6).toJSON() // why.
+            let dateQuery = jsonDate.slice(0, 10)
+            this.activeDate = dateQuery
         },
         getWeek() {
             let curr = new Date
