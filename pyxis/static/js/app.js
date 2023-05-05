@@ -4,7 +4,7 @@ new Vue({
     data: {
         token: '',
         currentUser: '',
-        habits: {},
+        habits: [],
         habitsPreview: {},
         tasks: {},
         journalEntry: {},
@@ -28,28 +28,84 @@ new Vue({
         weekEnd: '',
         addTaskWindow: false,
         addJournalWindow: false,
+        addHabitWindow: false,
         newTaskName: '',
         newTaskDesc: '',
         newTaskUrgent: false,
         newTaskImportant: false,
         newTaskDue: null,
         newJournal: '',
+        newHabitName: '',
+        newHabitDesc: '',
+        todayHabitTasksAll: [],
+        todayHabitTasksCreated: [],
+        todayHabitTaskData: []
     },
     methods: {
         getUser() {
             axios.get('/api/').then(res => this.currentUser = res.data.id)
         },
         getHabits() {
-            // axios.get('api/habits')
-            //     .then(response => {
-            //         this.habits = response.data
-            //     })
+            axios.get('api/habits/')
+                .then(response => {
+                    this.habits = response.data
+                    // TODO: actual day awareness
+                    todayHabits = this.habits.filter(h => h.recurrence.includes(5)).reverse()
+                    this.getHabitTasks()
+                })
+        },
+        getHabitTasks() {
+            // TODO: this will need a date query param when the endpoint gets updated
+            axios.get('api/habittask/')
+                .then(response => {
+                    this.todayHabitTasksCreated = response.data
+
+                    this.todayHabitTaskData = todayHabits.map(h => {
+                        thisHabitTask = this.todayHabitTasksCreated.find(ht => ht.habit.id == h.id)
+
+                        // TODO: what does this actually need?
+                        return {
+                            habitTask: thisHabitTask,
+                            name: h.name,
+                            habit: h
+                        }
+                    })
+                })
+        },
+        updateHabitTask(habitTaskData) {
+            if (habitTaskData.habitTask) {
+                axios.patch(`api/habittask/${habitTaskData.habitTask.id}/done/`, {},
+                    { headers: { 'X-CSRFToken': this.token } }
+                ).then(() => this.getHabitTasks())
+            } else {
+                // TODO: make this the selected date
+                axios.post(`api/habittask/new/`, {
+                    "date": this.newDate(),
+                    "habit": habitTaskData.habit.id,
+                    "completed_time": new Date(),
+                }, { headers: { 'X-CSRFToken': this.token } }
+                ).then(() => this.getHabitTasks())
+            }
         },
         previewHabit() {
             // retrieve just first X number of habits for the day
             // if len of habits exceeds X, add a "More..." to end of list
         },
         editHabit() {
+
+        },
+        addHabit() {
+            axios.post(`api/habits/new/`, {
+                "name": this.newHabitName,
+                "description": this.newHabitDesc,
+                "user": this.currentUser,
+                "recurrence": '1,3,5'
+            }, { headers: { 'X-CSRFToken': this.token } }
+            ).then(() => this.getHabits())
+
+            this.addHabitWindow = false
+            this.newHabitName = ''
+            this.newHabitDesc = ''
 
         },
         getTodayTasks() {
@@ -80,12 +136,12 @@ new Vue({
                 "user": this.currentUser
             }, { headers: { 'X-CSRFToken': this.token } })
                 .then(() => this.getTodayTasks())
-            this.addTaskWindow = false,
-                this.newTaskName = '',
-                this.newTaskDesc = '',
-                this.newTaskUrgent = false,
-                this.newTaskImportant = false,
-                this.newTaskDue = null
+            this.addTaskWindow = false
+            this.newTaskName = ''
+            this.newTaskDesc = ''
+            this.newTaskUrgent = false
+            this.newTaskImportant = false
+            this.newTaskDue = null
         },
         newDate() {
             const newDate = new Date()
@@ -159,6 +215,12 @@ new Vue({
             this.activeTasks = false
             this.activeHabits = false
             this.activeJournal = true
+        },
+        openHabits() {
+            this.addHabitWindow = !this.addHabitWindow
+            this.activeTasks = false
+            this.activeHabits = true
+            this.activeJournal = false
         }
     },
     computed: {
@@ -175,6 +237,7 @@ new Vue({
         this.getJournal()
         this.getTodayTasks()
         this.getWeek()
+        this.getHabits()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
 })
