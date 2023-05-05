@@ -32,7 +32,7 @@ class HabitTaskView(generics.ListAPIView):
     serializer_class = HabitTaskSerializer
     
     def get_queryset(self):
-        return HabitTask.objects.filter(date=timezone.now().date())
+        return HabitTask.objects.filter(date=timezone.now().date(), user=self.request.user)
 
 
 # make a 'create' endpoint
@@ -47,7 +47,7 @@ class DoneHabitTask(generics.UpdateAPIView):
     queryset = HabitTask.objects.all()
 
     def perform_update(self, serializer):
-        habit = HabitTask.objects.get(date=timezone.now().date())
+        habit = HabitTask.objects.get(pk=self.kwargs['pk'])
 
         if habit.completed_time is None:
             serializer.save(completed_time=timezone.now())
