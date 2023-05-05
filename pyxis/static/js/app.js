@@ -7,7 +7,8 @@ new Vue({
         habits: {},
         habitsPreview: {},
         tasks: {},
-        journalEntries: {},
+        journalEntry: {},
+        journalPrev: '',
         daysOfTheWeek: {
             0: { name: 'sunday', abbrv: 'S' },
             1: { name: 'monday', abbrv: 'M' },
@@ -26,11 +27,13 @@ new Vue({
         weekStart: '',
         weekEnd: '',
         addTaskWindow: false,
+        addJournalWindow: false,
         newTaskName: '',
         newTaskDesc: '',
         newTaskUrgent: false,
         newTaskImportant: false,
         newTaskDue: null,
+        newJournal: '',
     },
     methods: {
         getUser() {
@@ -51,18 +54,19 @@ new Vue({
         },
         getTodayTasks() {
             axios.get('api/tasks/')
-            .then(response => {
-                this.tasks = response.data.reverse()
-            })
+                .then(response => {
+                    this.tasks = response.data.reverse()
+                })
         },
         updateTask(taskID) {
-            axios.patch(`api/tasks/${taskID}/done/`,{},  
-                { headers: {'X-CSRFToken': this.token }}
+            axios.patch(`api/tasks/${taskID}/done/`, {},
+                { headers: { 'X-CSRFToken': this.token } }
             ).then(() => this.getTodayTasks())
         },
         deleteTask(taskID) {
             axios.delete(`api/tasks/${taskID}/`, {
-            headers: {'X-CSRFToken': this.token }}).then(() => this.getTodayTasks())
+                headers: { 'X-CSRFToken': this.token }
+            }).then(() => this.getTodayTasks())
         },
         addTask() {
             axios.post(`api/tasks/new/`, {
@@ -74,14 +78,14 @@ new Vue({
                 "is_important": this.newTaskImportant,
                 "due_date": this.newTaskDue,
                 "user": this.currentUser
-            }, {headers: {'X-CSRFToken': this.token }})
-            .then(() => this.getTodayTasks())
+            }, { headers: { 'X-CSRFToken': this.token } })
+                .then(() => this.getTodayTasks())
             this.addTaskWindow = false,
-            this.newTaskName = '',
-            this.newTaskDesc = '',
-            this.newTaskUrgent = false,
-            this.newTaskImportant = false,
-            this.newTaskDue = null
+                this.newTaskName = '',
+                this.newTaskDesc = '',
+                this.newTaskUrgent = false,
+                this.newTaskImportant = false,
+                this.newTaskDue = null
         },
         newDate() {
             const newDate = new Date()
@@ -89,13 +93,33 @@ new Vue({
             let dateQuery = jsonDate.slice(0, 10)
             return dateQuery
         },
-        getJournals() {
-            
+        getJournal() {
+            let todayJournal = this.newDate()
+            axios.get('api/journal/', {
+                params: { date: todayJournal }
+            })
+                .then(response => {
+                    this.journalEntry = response.data
+                    this.journalPreview()
+                })
+        },
+        createJournal(journalID) {
+            axios.patch(`api/journal/${journalID}/edit/`,
+                { "entry": this.newJournal }, { headers: { 'X-CSRFToken': this.token } }
+            ).then(response => {
+                this.journalEntry = response.data
+                this.addJournalWindow = false
+            })
+        },
+        journalPreview() {
+            const lineBreak = this.journalEntry.entry.split(/\r?\n/)
+            let firstLine = lineBreak[0]
+            this.journalPrev = firstLine
         },
         weekNext() {
             this.changeWeekNext = true
             setTimeout(() => {
-            this.changeWeekNext = false
+                this.changeWeekNext = false
             }, 1000)
 
             let sun = new Date(this.weekStart)
@@ -106,7 +130,7 @@ new Vue({
         weekPrev() {
             this.changeWeekPrev = true
             setTimeout(() => {
-            this.changeWeekPrev = false
+                this.changeWeekPrev = false
             }, 1000)
 
             let sun = new Date(this.weekStart)
@@ -129,6 +153,12 @@ new Vue({
             this.activeTasks = true
             this.activeHabits = false
             this.activeJournal = false
+        },
+        openJournal() {
+            this.addJournalWindow = !this.addJournalWindow
+            this.activeTasks = false
+            this.activeHabits = false
+            this.activeJournal = true
         }
     },
     computed: {
@@ -142,7 +172,7 @@ new Vue({
     },
     mounted() {
         this.getUser()
-        this.getJournals()
+        this.getJournal()
         this.getTodayTasks()
         this.getWeek()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
@@ -223,9 +253,9 @@ Vue.component('UserTasks', {
                 "due_date": this.editTaskDue,
                 "is_urgent": this.editTaskUrgent,
                 "is_important": this.editTaskImportant
-            },  
-                { headers: {'X-CSRFToken': this.$parent.token }}
+            }, { headers: { 'X-CSRFToken': this.$parent.token } }
             ).then(() => { this.$parent.getTodayTasks() })
+
             this.editing = null
         },
         editToggle() {
@@ -250,5 +280,51 @@ Vue.component('UserTasks', {
     },
     updated() {
         this.dueDate()
+    }
+})
+
+Vue.component('DailyJournal', {
+    template: ` 
+        <div>
+            <strong>[[ journal.date ]]</strong>
+            <span><i class="fa-solid fa-pen-to-square" title="Edit" @click="editJournalToggle"></i></span>
+            
+            <p v-if="editJournal === null" class="detail descrip">
+                [[ journal.entry ]]
+            </p>
+            <p v-else-if="editJournal === journal.id">
+                <textarea v-model="editEntry" class="editfield" rows="10" cols="70"></textarea>
+            </p>
+            <button v-if="editJournal === journal.id" @click="updateJournal" class="save">
+                <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        </div>`,
+    props: {
+        journal: Object
+    },
+    delimiters: ['[[', ']]'],
+    data: () => {
+        return {
+            editJournal: null,
+            editEntry: '',
+        }
+    },
+    methods: {
+        editJournalToggle() {
+            if (this.editJournal === null) {
+                return this.editJournal = this.journal.id
+            } else { return this.editJournal = null }
+        },
+        updateJournal() {
+            axios.patch(`api/journal/${this.journal.id}/edit/`,
+                { "entry": this.editEntry }, { headers: { 'X-CSRFToken': this.$parent.token } }
+            ).then(response => {
+                this.$parent.journalEntry = response.data
+                this.editJournal = null
+            })
+        }
+    },
+    mounted() {
+        this.editEntry = this.journal.entry
     }
 })
