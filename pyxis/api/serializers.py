@@ -10,7 +10,7 @@ class HabitSerializer(serializers.ModelSerializer):
 class HabitTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = HabitTask
-        fields = ['name', 'habit', 'date', 'complete_time']
+        fields = ['habit', 'date', 'completed_time']
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
