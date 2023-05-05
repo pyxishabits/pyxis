@@ -18,6 +18,7 @@ new Vue({
             6: { name: 'saturday', abbrv: 'S' },
         },
         today: '',
+        activeDate: null,
         activeHabits: false,
         activeTasks: false,
         activeJournal: false,
@@ -83,6 +84,21 @@ new Vue({
             this.newTaskImportant = false,
             this.newTaskDue = null
         },
+        viewForDay(day) {
+            this.today = day
+            let foundDay
+            for (key in this.daysOfTheWeek) {
+                if (this.daysOfTheWeek[key].name === day) {
+                    foundDay = key
+                }
+            }
+
+            dayNum = Number(foundDay)
+            let sun = new Date(this.weekStart)
+            let jsonDate = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + dayNum).toJSON()
+            let dateQuery = jsonDate.slice(0, 10)
+            this.activeDate = dateQuery
+        },
         newDate() {
             const newDate = new Date()
             let jsonDate = newDate.toJSON()
@@ -145,6 +161,7 @@ new Vue({
         this.getJournals()
         this.getTodayTasks()
         this.getWeek()
+        this.activeDate = this.newDate()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
 })

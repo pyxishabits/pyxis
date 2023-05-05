@@ -56,7 +56,7 @@
             <div id="weekdates">
                 [[ weekStart ]] to [[ weekEnd ]]
             </div>
-
+            
             <nav id="weekly-view">
                 <div class="prev-week" @click="weekPrev">
                     <i class="fa-solid fa-angles-left"></i>
@@ -64,7 +64,7 @@
                     <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" 
                         :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
                         {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]"
-                        @click="today = day.name">
+                        @click="viewForDay(day.name)"> <!-- AA was @click="today = day.name"-->
                         [[ day.abbrv ]]
                     </div>
                 <div class="next-week" @click="weekNext">
@@ -175,7 +175,7 @@
                             <button @click="addTask">Save</button>
                         </div>
                         <dl>
-                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
+                        <user-tasks v-for="t in tasks" v-if="t.date === activeDate" :task="t" :key="t.id"
                         @edit="" @update="updateTask" @delete="deleteTask">
 
                         </user-tasks>
