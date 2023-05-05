@@ -10,7 +10,7 @@ class HabitSerializer(serializers.ModelSerializer):
 class HabitTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = HabitTask
-        fields = ['name', 'habit', 'date', 'complete_time']
+        fields = ['habit', 'date', 'completed_time']
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,7 +22,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class JournalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journal
-        fields = ['entry', 'date', 'time_updated', 'user']
+        fields = ['entry', 'date', 'time_updated', 'user', 'id']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

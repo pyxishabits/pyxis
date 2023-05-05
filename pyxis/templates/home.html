@@ -174,12 +174,9 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <dl>
                         <user-tasks v-for="t in tasks" v-if="t.date === activeDate" :task="t" :key="t.id"
-                        @edit="" @update="updateTask" @delete="deleteTask">
-
+                        @update="updateTask" @delete="deleteTask">
                         </user-tasks>
-                        </dl>
                     </div>
                 </div>
 
@@ -224,47 +221,35 @@
                 </div>
 
                 {% if user.is_authenticated %}
+
                 <div class="show-entry">
-                    <div v-if="!activeJournal">
-                        Most recent Journal Day, prev first 3 lines
+                    <div v-if="!activeJournal" class="preview">
+                        <span v-if="!journalEntry.entry">You have no Journal for today yet!</span>
+                        <span v-else>[[ journalPrev ]]</span>
                     </div>
-                    <div v-if="activeJournal">
-                        <h5>DATE OF ENTRY</h5>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                            sed do eiusmod tempor incididunt ut labore et dolore magna 
-                            aliqua. Lectus quam id leo in vitae turpis massa sed elementum. 
-                            Id faucibus nisl tincidunt eget nullam non nisi est. 
-                            Amet nisl suscipit adipiscing bibendum est. Iaculis urna 
-                            id volutpat lacus. Eu turpis egestas pretium aenean pharetra 
-                            magna ac placerat. Nibh sed pulvinar proin gravida. Gravida 
-                            neque convallis a cras semper. Non quam lacus suspendisse 
-                            faucibus interdum. At consectetur lorem donec massa sapien 
-                            faucibus et. Placerat in egestas erat imperdiet sed euismod 
-                            nisi porta lorem. Integer eget aliquet nibh praesent tristique
-                            magna sit amet purus. Nisi est sit amet facilisis magna etiam. 
-                            Congue eu consequat ac felis donec et. 
-                            Rutrum tellus pellentesque eu tincidunt tortor aliquam nulla. 
-                            Urna id volutpat lacus laoreet. Arcu odio ut sem nulla.
-                        </p>
-                        <p>
-                            Morbi leo urna molestie at elementum. 
-                            Id aliquet lectus proin nibh nisl. 
-                            Sed adipiscing diam donec adipiscing tristique risus nec 
-                            feugiat. Porttitor rhoncus dolor purus non enim. Proin nibh 
-                            nisl condimentum id venenatis a condimentum vitae sapien. 
-                            Porttitor eget dolor morbi non arcu risus quis. Commodo sed 
-                            egestas egestas fringilla phasellus faucibus scelerisque 
-                            eleifend. Vulputate sapien nec sagittis aliquam. Ut ornare 
-                            lectus sit amet est. Et tortor at risus viverra adipiscing at. 
-                            Donec massa sapien faucibus et. Morbi tristique senectus 
-                            et netus et malesuada fames ac turpis. Donec ac odio tempor 
-                            orci dapibus ultrices. Massa ultricies mi quis hendrerit 
-                            dolor. Sed velit dignissim sodales ut eu sem integer. 
-                            Consectetur a erat nam at lectus urna. Velit laoreet id donec 
-                            ultrices. Fusce id velit ut tortor. 
-                        </p>
+
+                    <div v-if="activeJournal" class="full">
+                        <div v-if="addJournalWindow" class="add-window">
+                            <h4>New Journal</h4>
+                            <div>
+                                <label for="new-journal"></label>
+                                <textarea name="new-journal" class="editfield" 
+                                rows="10" cols="70" v-model="newJournal"></textarea>
+                            </div>
+
+                            <button @click="createJournal(journalEntry.id)">Save</button>
+                        </div>
+
+                        <daily-journal v-if="journalEntry.entry" :journal="journalEntry" 
+                        :key="journalEntry.id">
+                        </daily-journal>
                     </div>
+                </div>
+
+                <div class="add-entry" v-if="!journalEntry.entry">
+                    <button class="add-button" @click="openJournal">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                 </div>
                 {% else %}
                 <div class="show-entry">
