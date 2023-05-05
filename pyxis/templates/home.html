@@ -105,26 +105,16 @@
                                 </div>
                             </div>
                             <!-- TODO: get recurrence in here somehow -->
-                            <!-- <div class="input">
-                                <label for="habiturgent">Urgent: </label>
-                                <input type="checkbox" name="habiturgent" v-model="newHabitUrgent">
-                                <label for="habitimportant">Important: </label>
-                                <input type="checkbox" name="habitimportant" v-model="newHabitImportant">
-                            </div>
-                            <div class="input">
-                                <label for="habitdue">Due: </label>
-                                <input type="date" name="habitdue" min="newDate" v-model="newHabitDue">
-                            </div> -->
                             <button @click="addHabit">Save</button>
                         </div>
 
-                        <div v-for="habittaskmeta in todayHabitTaskData">
-                            <span @click="updateHabitTask(habittaskmeta)">
-                                <i v-if="habittaskmeta.habitTask && habittaskmeta.habitTask.completed_time"
+                        <div v-for="habittaskinfo in todayHabitTaskData">
+                            <span @click="updateHabitTask(habittaskinfo)">
+                                <i v-if="habittaskinfo.habitTask && habittaskinfo.habitTask.completed_time"
                                     class="fa-solid fa-square-check"></i>
                                 <i v-else class="fa-regular fa-square"></i>
                             </span>
-                            <span>[[ habittaskmeta.name ]]</span>
+                            <span>[[ habittaskinfo.name ]]</span>
                         </div>
 
                     </div>

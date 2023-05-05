@@ -46,18 +46,17 @@ new Vue({
             axios.get('/api/').then(res => this.currentUser = res.data.id)
         },
         getHabits() {
-            axios.get('api/habits')
+            axios.get('api/habits/')
                 .then(response => {
                     this.habits = response.data
                     // TODO: actual day awareness
                     todayHabits = this.habits.filter(h => h.recurrence.includes(5)).reverse()
                     this.getHabitTasks()
-
                 })
         },
         getHabitTasks() {
             // TODO: this will need a date query param when the endpoint gets updated
-            axios.get('api/habittask')
+            axios.get('api/habittask/')
                 .then(response => {
                     this.todayHabitTasksCreated = response.data
 
@@ -79,28 +78,14 @@ new Vue({
                     { headers: { 'X-CSRFToken': this.token } }
                 ).then(() => this.getHabitTasks())
             } else {
-                console.log(habitTaskData.habit);
                 // TODO: make this the selected date
-                axios.post(`api/habittask/new`, {
+                axios.post(`api/habittask/new/`, {
                     "date": this.newDate(),
-                    "habit": habitTaskData.habit,
-                    "completed_time": new Date()
-                }, { headers: { 'X-CSRFToken': this.token } })
-                    .then(() => console.log('?????'))
+                    "habit": habitTaskData.habit.id,
+                    "completed_time": new Date(),
+                }, { headers: { 'X-CSRFToken': this.token } }
+                ).then(() => this.getHabitTasks())
             }
-
-            let thing = {
-                "date": "2023-05-04",
-                "completed_time": "2023-05-04",
-                "habit": {
-                    "description": "???????",
-                    "id": 3,
-                    "name": "???/",
-                    "recurrence": "1,3,5",
-                    "user": 3
-                }
-            }
-
         },
         previewHabit() {
             // retrieve just first X number of habits for the day
@@ -110,14 +95,13 @@ new Vue({
 
         },
         addHabit() {
-            console.log();
             axios.post(`api/habits/new/`, {
                 "name": this.newHabitName,
                 "description": this.newHabitDesc,
                 "user": this.currentUser,
                 "recurrence": '1,3,5'
-            }, { headers: { 'X-CSRFToken': this.token } })
-                .then(() => console.log('made one!'))
+            }, { headers: { 'X-CSRFToken': this.token } }
+            ).then(() => this.getHabits())
 
             this.addHabitWindow = false
             this.newHabitName = ''

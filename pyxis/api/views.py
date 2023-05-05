@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from tasks.models import *
 from django.utils import timezone
-from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
+from .serializers import *
 from datetime import datetime
 
 
@@ -43,7 +43,7 @@ class HabitTaskView(generics.ListAPIView):
 
 # make a 'create' endpoint
 class CreateHabitTask(generics.CreateAPIView):
-    serializer_class = HabitTaskSerializer
+    serializer_class = HabitTaskWriteSerializer
     queryset = HabitTask.objects.all()
 
 
