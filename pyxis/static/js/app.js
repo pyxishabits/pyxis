@@ -20,6 +20,7 @@ new Vue({
         },
         today: '',
         activeDate: null,
+        activeDateTime: null,
         activeHabits: false,
         activeTasks: false,
         activeJournal: false,
@@ -100,14 +101,18 @@ new Vue({
             dayNum = Number(foundDay)
             let sun = new Date(this.weekStart)
             let jsonDate = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + dayNum).toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            this.activeDate = dateQuery
+
+            this.activeDateTime = jsonDate
+            let dateString = jsonDate.slice(0, 10)
+            this.activeDate = dateString
         },
         newDate() {
             const newDate = new Date()
-            let jsonDate = newDate.toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            return dateQuery
+            let jsonDate = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toJSON()
+            this.activeDateTime = jsonDate
+            console.log(jsonDate)
+            let dateString = jsonDate.slice(0, 10)
+            return dateString
         },
         getJournal() {
             let todayJournal = this.newDate()
@@ -141,12 +146,15 @@ new Vue({
 
             let sun = new Date(this.weekStart)
             let sat = new Date(this.weekEnd)
-            let curr = new Date(this.activeDate)
+            let curr = new Date(this.activeDateTime)
+
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() + 7).toDateString()
             let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 7).toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            this.activeDate = dateQuery
+
+            this.activeDateTime = jsonDate
+            let dateString = jsonDate.slice(0, 10)
+            this.activeDate = dateString
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -156,12 +164,15 @@ new Vue({
 
             let sun = new Date(this.weekStart)
             let sat = new Date(this.weekEnd)
-            let curr = new Date(this.activeDate)
+            let curr = new Date(this.activeDateTime)
+
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() - 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() - 7).toDateString()
             let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() - 7).toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            this.activeDate = dateQuery
+
+            this.activeDateTime = jsonDate
+            let dateString = jsonDate.slice(0, 10)
+            this.activeDate = dateString
         },
         getWeek() {
             let curr = new Date
@@ -292,8 +303,8 @@ Vue.component('UserTasks', {
         dueDate() {
             const newDate = new Date(this.task.due_date)
             let jsonDate = newDate.toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            this.dueDisplay = dateQuery
+            let dateString = jsonDate.slice(0, 10)
+            this.dueDisplay = dateString
         },
     },
     mounted() {
