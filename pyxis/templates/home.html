@@ -106,7 +106,19 @@
                                     <textarea name="habitdesc" rows="5" cols="25" v-model="newHabitDesc"></textarea>
                                 </div>
                             </div>
-                            <!-- TODO: get recurrence in here somehow -->
+                            <div class="input">
+                                <!-- TODO: get recurrence in here somehow -->
+                                <label for="recurrence">Schedule: </label>
+                                <div>
+                                    <input type="checkbox" name="sunday" v-model="newRecurrence[0]">
+                                    <input type="checkbox" name="monday" v-model="newRecurrence[1]">
+                                    <input type="checkbox" name="tuesday" v-model="newRecurrence[2]">
+                                    <input type="checkbox" name="wednesday" v-model="newRecurrence[3]">
+                                    <input type="checkbox" name="thursday" v-model="newRecurrence[4]">
+                                    <input type="checkbox" name="friday" v-model="newRecurrence[5]">
+                                    <input type="checkbox" name="saturday" v-model="newRecurrence[6]">
+                                </div>
+                            </div>
                             <button @click="addHabit">Save</button>
                         </div>
 
