@@ -81,12 +81,12 @@ new Vue({
                 "user": this.currentUser
             }, { headers: { 'X-CSRFToken': this.token } })
                 .then(() => this.getTodayTasks())
-            this.addTaskWindow = false,
-                this.newTaskName = '',
-                this.newTaskDesc = '',
-                this.newTaskUrgent = false,
-                this.newTaskImportant = false,
-                this.newTaskDue = null
+            this.addTaskWindow = false
+            this.newTaskName = ''
+            this.newTaskDesc = ''
+            this.newTaskUrgent = false
+            this.newTaskImportant = false
+            this.newTaskDue = null
         },
         viewForDay(day) {
             this.today = day
@@ -128,6 +128,7 @@ new Vue({
             })
         },
         journalPreview() {
+            // TODO: conditional only if journalEntry.entry not empty
             const lineBreak = this.journalEntry.entry.split(/\r?\n/)
             let firstLine = lineBreak[0]
             this.journalPrev = firstLine
@@ -143,7 +144,7 @@ new Vue({
             let curr = new Date(this.activeDate)
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() + 7).toDateString()
-            let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 8).toJSON() // why.
+            let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 7).toJSON()
             let dateQuery = jsonDate.slice(0, 10)
             this.activeDate = dateQuery
         },
@@ -158,7 +159,7 @@ new Vue({
             let curr = new Date(this.activeDate)
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() - 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() - 7).toDateString()
-            let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() - 6).toJSON() // why.
+            let jsonDate= new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() - 7).toJSON()
             let dateQuery = jsonDate.slice(0, 10)
             this.activeDate = dateQuery
         },
@@ -188,7 +189,7 @@ new Vue({
     computed: {
         todayWeekday() {
             const todayDate = new Date
-            const todayIndex = todayDate.getDate()
+            const todayIndex = todayDate.getDay()
             if (this.today === '') {
                 return this.today = this.daysOfTheWeek[todayIndex].name
             }
@@ -314,9 +315,7 @@ Vue.component('DailyJournal', {
             <strong>[[ journal.date ]]</strong>
             <span><i class="fa-solid fa-pen-to-square" title="Edit" @click="editJournalToggle"></i></span>
             
-            <p v-if="editJournal === null" class="detail descrip">
-                [[ journal.entry ]]
-            </p>
+            <p v-if="editJournal === null" class="detail descrip">[[journal.entry]]</p>
             <p v-else-if="editJournal === journal.id">
                 <textarea v-model="editEntry" class="editfield" rows="10" cols="70"></textarea>
             </p>
