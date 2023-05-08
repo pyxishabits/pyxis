@@ -226,7 +226,7 @@ new Vue({
     computed: {
         todayWeekday() {
             const todayDate = new Date
-            const todayIndex = todayDate.getDate()
+            const todayIndex = todayDate.getDay()
             if (this.today === '') {
                 return this.today = this.daysOfTheWeek[todayIndex].name
             }
