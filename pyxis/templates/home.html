@@ -61,162 +61,81 @@
                 <div class="prev-week" @click="weekPrev">
                     <i class="fa-solid fa-angles-left"></i>
                 </div>
-                <<<<<<< HEAD <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
+                <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
                         {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="viewForDay(day.name)">
                     <!-- AA was @click="today = day.name"-->
                     [[ day.abbrv ]]
-    </div>
-    =======
-    <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
-                        {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="today = day.name">
-        [[ day.abbrv ]]
-    </div>
-    >>>>>>> origin
-    <div class="next-week" @click="weekNext">
-        <i class="fa-solid fa-angles-right"></i>
-    </div>
-    </nav>
-    </header>
+                </div>
 
-    <div id="wrapper">
-        <!-- TODO: refine preview content for unauthenticated -->
-        {% block content %}
+                <div class="next-week" @click="weekNext">
+                    <i class="fa-solid fa-angles-right"></i>
+                </div>
+            </nav>
+        </header>
 
-        <div id="habits" class="main" :class="[{activeTab: activeHabits}, 
+        <div id="wrapper">
+            <!-- TODO: refine preview content for unauthenticated -->
+            {% block content %}
+
+            <div id="habits" class="main" :class="[{activeTab: activeHabits}, 
                 {inactiveTab: activeTasks || activeJournal }]">
 
-            <div class="title" @click="activeHabits = !activeHabits">
-                <h3 v-if="today != ''">[[today]]'s habits</h3>
-            </div>
+                <div class="title" @click="activeHabits = !activeHabits">
+                    <h3 v-if="today != ''">[[today]]'s habits</h3>
+                </div>
 
-            {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
 
-            <div class="show-entry">
+                <div class="show-entry">
+                    <div v-if="!activeHabits" class="preview">
+                        <div v-for="h in habitsPreview">
+                            [[ h.name ]]
+                        </div>
+                    </div>
+
+                    <div v-if="activeHabits" class="full">
+                        <div v-if="addHabitWindow" class="add-window">
+                            <h4>New Habit</h4>
+                            <div class="input">
+                                <label for="habitname">Name: </label>
+                                <input type="text" name="habitname" v-model="newHabitName">
+                            </div>
+                            <div class="input">
+                                <label for="habitdesc">Description: </label>
+                                <div>
+                                    <textarea name="habitdesc" rows="5" cols="25" v-model="newHabitDesc"></textarea>
+                                </div>
+                            </div>
+                            <!-- TODO: get recurrence in here somehow -->
+                            <button @click="addHabit">Save</button>
+                        </div>
+
+                        <div v-for="habittaskinfo in todayHabitTaskData">
+                            <span @click="updateHabitTask(habittaskinfo)">
+                                <i v-if="habittaskinfo.habitTask && habittaskinfo.habitTask.completed_time"
+                                    class="fa-solid fa-square-check"></i>
+                                <i v-else class="fa-regular fa-square"></i>
+                            </span>
+                            <span>[[ habittaskinfo.name ]]</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="add-entry">
+                    <button class="add-button" @click="openHabits">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                {% else %}
+
                 <div v-if="!activeHabits" class="preview">
-                    <div v-for="h in habitsPreview">
-                        [[ h.name ]]
-                    </div>
+                    <div>THING</div>
+                    <div>THING</div>
+                    <div>THING</div>
                 </div>
-
                 <div v-if="activeHabits" class="full">
-                    <div v-if="addHabitWindow" class="add-window">
-                        <h4>New Habit</h4>
-                        <div class="input">
-                            <label for="habitname">Name: </label>
-                            <input type="text" name="habitname" v-model="newHabitName">
-                        </div>
-                        <div class="input">
-                            <label for="habitdesc">Description: </label>
-                            <div>
-                                <textarea name="habitdesc" rows="5" cols="25" v-model="newHabitDesc"></textarea>
-                            </div>
-                        </div>
-                        <!-- TODO: get recurrence in here somehow -->
-                        <button @click="addHabit">Save</button>
-                    </div>
-
-                    <div v-for="habittaskinfo in todayHabitTaskData">
-                        <span @click="updateHabitTask(habittaskinfo)">
-                            <i v-if="habittaskinfo.habitTask && habittaskinfo.habitTask.completed_time"
-                                class="fa-solid fa-square-check"></i>
-                            <i v-else class="fa-regular fa-square"></i>
-                        </span>
-                        <span>[[ habittaskinfo.name ]]</span>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="add-entry">
-                <button class="add-button" @click="openHabits">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
-
-            {% else %}
-
-            <div v-if="!activeHabits" class="preview">
-                <div>THING</div>
-                <div>THING</div>
-                <div>THING</div>
-            </div>
-            <div v-if="activeHabits" class="full">
-                <dl>
-                    <dt>THING</dt>
-                    <dd>all about thing</dd>
-                    <dt>THING</dt>
-                    <dd>all about thing</dd>
-                    <dt>THING</dt>
-                    <dd>all about thing</dd>
-                    <dt>THING</dt>
-                    <dd>all about thing</dd>
-                    <dt>THING</dt>
-                    <dd>all about thing</dd>
-                </dl>
-            </div>
-            <p>Sign up and get started!</p>
-            {% endif %}
-        </div>
-
-        <div id="tasks" class="main" :class="[{activeTab: activeTasks}, 
-                {inactiveTab: activeHabits || activeJournal }]">
-
-            <div class="title" @click="activeTasks = !activeTasks">
-                <h3 v-if="today != ''">[[today]]'s tasks</h3>
-            </div>
-
-            {% if user.is_authenticated %}
-
-            <div class="show-entry">
-                <div v-if="!activeTasks" class="preview">
-                    <!-- <div v-for="t in taskPreview">
-                            [[ t.name ]]
-                        </div> -->
-                </div>
-                <div v-if="activeTasks" class="full">
-                    <div v-if="addTaskWindow" class="add-window">
-                        <h4>New Task</h4>
-                        <div class="input">
-                            <label for="taskname">Name: </label>
-                            <input type="text" name="taskname" v-model="newTaskName">
-                        </div>
-                        <div class="input">
-                            <label for="taskdesc">Description: </label>
-                            <div>
-                                <textarea name="taskdesc" rows="5" cols="25" v-model="newTaskDesc"></textarea>
-                            </div>
-                        </div>
-                        <div class="input">
-                            <label for="taskurgent">Urgent: </label>
-                            <input type="checkbox" name="taskurgent" v-model="newTaskUrgent">
-                            <label for="taskimportant">Important: </label>
-                            <input type="checkbox" name="taskimportant" v-model="newTaskImportant">
-                        </div>
-                        <div class="input">
-                            <label for="taskdue">Due: </label>
-                            <input type="date" name="taskdue" min="newDate" v-model="newTaskDue">
-                        </div>
-                        <button @click="addTask">Save</button>
-                    </div>
-                    <user-tasks v-for="t in tasks" v-if="t.date === activeDate" :task="t" :key="t.id"
-                        @update="updateTask" @delete="deleteTask">
-                    </user-tasks>
-                </div>
-            </div>
-
-            <div class="add-entry">
-                <button class="add-button" @click="openTasks">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
-            {% else %}
-            <div class="show-entry">
-                <div v-if="!activeTasks" class="preview">
-                    <div>THING</div>
-                    <div>THING</div>
-                    <div>THING</div>
-                </div>
-                <div v-if="activeTasks" class="full">
                     <dl>
                         <dt>THING</dt>
                         <dd>all about thing</dd>
@@ -229,58 +148,134 @@
                         <dt>THING</dt>
                         <dd>all about thing</dd>
                     </dl>
-                    <p>Sign up and get started!</p>
                 </div>
+                <p>Sign up and get started!</p>
+                {% endif %}
             </div>
-            {% endif %}
 
-        </div>
+            <div id="tasks" class="main" :class="[{activeTab: activeTasks}, 
+                {inactiveTab: activeHabits || activeJournal }]">
 
-        <div id="journal" class="main" :class="[{activeTab: activeJournal}, 
+                <div class="title" @click="activeTasks = !activeTasks">
+                    <h3 v-if="today != ''">[[today]]'s tasks</h3>
+                </div>
+
+                {% if user.is_authenticated %}
+
+                <div class="show-entry">
+                    <div v-if="!activeTasks" class="preview">
+                        <!-- <div v-for="t in taskPreview">
+                            [[ t.name ]]
+                        </div> -->
+                    </div>
+                    <div v-if="activeTasks" class="full">
+                        <div v-if="addTaskWindow" class="add-window">
+                            <h4>New Task</h4>
+                            <div class="input">
+                                <label for="taskname">Name: </label>
+                                <input type="text" name="taskname" v-model="newTaskName">
+                            </div>
+                            <div class="input">
+                                <label for="taskdesc">Description: </label>
+                                <div>
+                                    <textarea name="taskdesc" rows="5" cols="25" v-model="newTaskDesc"></textarea>
+                                </div>
+                            </div>
+                            <div class="input">
+                                <label for="taskurgent">Urgent: </label>
+                                <input type="checkbox" name="taskurgent" v-model="newTaskUrgent">
+                                <label for="taskimportant">Important: </label>
+                                <input type="checkbox" name="taskimportant" v-model="newTaskImportant">
+                            </div>
+                            <div class="input">
+                                <label for="taskdue">Due: </label>
+                                <input type="date" name="taskdue" min="newDate" v-model="newTaskDue">
+                            </div>
+                            <button @click="addTask">Save</button>
+                        </div>
+                        <user-tasks v-for="t in tasks" v-if="t.date === activeDate" :task="t" :key="t.id"
+                            @update="updateTask" @delete="deleteTask">
+                        </user-tasks>
+                    </div>
+                </div>
+
+                <div class="add-entry">
+                    <button class="add-button" @click="openTasks">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                {% else %}
+                <div class="show-entry">
+                    <div v-if="!activeTasks" class="preview">
+                        <div>THING</div>
+                        <div>THING</div>
+                        <div>THING</div>
+                    </div>
+                    <div v-if="activeTasks" class="full">
+                        <dl>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                            <dt>THING</dt>
+                            <dd>all about thing</dd>
+                        </dl>
+                        <p>Sign up and get started!</p>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <div id="journal" class="main" :class="[{activeTab: activeJournal}, 
                 {inactiveTab: activeHabits || activeTasks }]">
 
-            <div class="title" @click="activeJournal = !activeJournal">
-                <h3>JOURNAL</h3>
-            </div>
-
-            {% if user.is_authenticated %}
-
-            <div class="show-entry">
-                <div v-if="!activeJournal" class="preview">
-                    <span v-if="!journalEntry.entry">You have no Journal for today yet!</span>
-                    <span v-else>[[ journalPrev ]]</span>
+                <div class="title" @click="activeJournal = !activeJournal">
+                    <h3>JOURNAL</h3>
                 </div>
 
-                <div v-if="activeJournal" class="full">
-                    <div v-if="addJournalWindow" class="add-window">
-                        <h4>New Journal</h4>
-                        <div>
-                            <label for="new-journal"></label>
-                            <textarea name="new-journal" class="editfield" rows="10" cols="70"
-                                v-model="newJournal"></textarea>
-                        </div>
+                {% if user.is_authenticated %}
 
-                        <button @click="createJournal(journalEntry.id)">Save</button>
+                <div class="show-entry">
+                    <div v-if="!activeJournal" class="preview">
+                        <span v-if="!journalEntry.entry">You have no Journal for today yet!</span>
+                        <span v-else>[[ journalPrev ]]</span>
                     </div>
 
-                    <daily-journal v-if="journalEntry.entry" :journal="journalEntry" :key="journalEntry.id">
-                    </daily-journal>
-                </div>
-            </div>
+                    <div v-if="activeJournal" class="full">
+                        <div v-if="addJournalWindow" class="add-window">
+                            <h4>New Journal</h4>
+                            <div>
+                                <label for="new-journal"></label>
+                                <textarea name="new-journal" class="editfield" rows="10" cols="70"
+                                    v-model="newJournal"></textarea>
+                            </div>
 
-            <div class="add-entry" v-if="!journalEntry.entry">
-                <button class="add-button" @click="openJournal">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
+                            <button @click="createJournal(journalEntry.id)">Save</button>
+                        </div>
+
+                        <daily-journal v-if="journalEntry.entry" :journal="journalEntry" :key="journalEntry.id">
+                        </daily-journal>
+                    </div>
+                </div>
+
+                <div class="add-entry" v-if="!journalEntry.entry">
+                    <button class="add-button" @click="openJournal">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                {% else %}
+                <div class="show-entry">
+                    <p>Sign up and get started!</p>
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="show-entry">
-                <p>Sign up and get started!</p>
-            </div>
-            {% endif %}
+            {% endblock %}
         </div>
-        {% endblock %}
-    </div>
 
     </div>
 </body>

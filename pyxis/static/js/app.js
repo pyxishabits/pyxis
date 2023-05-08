@@ -144,7 +144,6 @@ new Vue({
             this.newTaskUrgent = false
             this.newTaskImportant = false
             this.newTaskDue = null
-<<<<<<< HEAD
         },
         viewForDay(day) {
             this.today = day
@@ -162,8 +161,6 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
-=======
->>>>>>> origin
         },
         newDate() {
             const newDate = new Date()
