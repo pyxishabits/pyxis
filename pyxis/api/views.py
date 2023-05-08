@@ -70,7 +70,7 @@ class TaskToday(generics.ListAPIView):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        return Task.objects.filter(date=timezone.now().date(), user=self.request.user)
+        return Task.objects.filter(user=self.request.user)
 
 
 class CreateTask(generics.CreateAPIView):

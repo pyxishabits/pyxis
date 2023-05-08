@@ -19,6 +19,8 @@ new Vue({
             6: { name: 'saturday', abbrv: 'S' },
         },
         today: '',
+        activeDate: null,
+        activeDateTime: null,
         activeHabits: false,
         activeTasks: false,
         activeJournal: false,
@@ -143,11 +145,30 @@ new Vue({
             this.newTaskImportant = false
             this.newTaskDue = null
         },
+        viewForDay(day) {
+            this.today = day
+            let foundDay
+            for (key in this.daysOfTheWeek) {
+                if (this.daysOfTheWeek[key].name === day) {
+                    foundDay = key
+                }
+            }
+
+            dayNum = Number(foundDay)
+            let sun = new Date(this.weekStart)
+            let jsonDate = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + dayNum).toJSON()
+
+            this.activeDateTime = jsonDate
+            let dateString = jsonDate.slice(0, 10)
+            this.activeDate = dateString
+        },
         newDate() {
             const newDate = new Date()
-            let jsonDate = newDate.toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            return dateQuery
+            let jsonDate = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toJSON()
+            this.activeDateTime = jsonDate
+            console.log(jsonDate)
+            let dateString = jsonDate.slice(0, 10)
+            return dateString
         },
         getJournal() {
             let todayJournal = this.newDate()
@@ -168,6 +189,7 @@ new Vue({
             })
         },
         journalPreview() {
+            // TODO: conditional only if journalEntry.entry not empty
             const lineBreak = this.journalEntry.entry.split(/\r?\n/)
             let firstLine = lineBreak[0]
             this.journalPrev = firstLine
@@ -180,8 +202,15 @@ new Vue({
 
             let sun = new Date(this.weekStart)
             let sat = new Date(this.weekEnd)
+            let curr = new Date(this.activeDateTime)
+
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() + 7).toDateString()
+            let jsonDate = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 7).toJSON()
+
+            this.activeDateTime = jsonDate
+            let dateString = jsonDate.slice(0, 10)
+            this.activeDate = dateString
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -191,8 +220,15 @@ new Vue({
 
             let sun = new Date(this.weekStart)
             let sat = new Date(this.weekEnd)
+            let curr = new Date(this.activeDateTime)
+
             this.weekStart = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() - 7).toDateString()
             this.weekEnd = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() - 7).toDateString()
+            let jsonDate = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() - 7).toJSON()
+
+            this.activeDateTime = jsonDate
+            let dateString = jsonDate.slice(0, 10)
+            this.activeDate = dateString
         },
         getWeek() {
             let curr = new Date
@@ -238,6 +274,7 @@ new Vue({
         this.getTodayTasks()
         this.getWeek()
         this.getHabits()
+        this.activeDate = this.newDate()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
 })
@@ -329,8 +366,8 @@ Vue.component('UserTasks', {
         dueDate() {
             const newDate = new Date(this.task.due_date)
             let jsonDate = newDate.toJSON()
-            let dateQuery = jsonDate.slice(0, 10)
-            this.dueDisplay = dateQuery
+            let dateString = jsonDate.slice(0, 10)
+            this.dueDisplay = dateString
         },
     },
     mounted() {
@@ -352,9 +389,7 @@ Vue.component('DailyJournal', {
             <strong>[[ journal.date ]]</strong>
             <span><i class="fa-solid fa-pen-to-square" title="Edit" @click="editJournalToggle"></i></span>
             
-            <p v-if="editJournal === null" class="detail descrip">
-                [[ journal.entry ]]
-            </p>
+            <p v-if="editJournal === null" class="detail descrip">[[journal.entry]]</p>
             <p v-else-if="editJournal === journal.id">
                 <textarea v-model="editEntry" class="editfield" rows="10" cols="70"></textarea>
             </p>
