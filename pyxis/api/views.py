@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from tasks.models import *
 from django.utils import timezone
-from .serializers import HabitSerializer, TaskSerializer, JournalSerializer, UserSerializer, HabitTaskSerializer
+from .serializers import *
 from datetime import datetime
 
 
@@ -30,14 +30,20 @@ class CreateHabit(generics.CreateAPIView):
 # returns users habits-related-task for one day
 class HabitTaskView(generics.ListAPIView):
     serializer_class = HabitTaskSerializer
-    
+
+    # TODO: get by any given date, not just today
     def get_queryset(self):
-        return HabitTask.objects.filter(date=timezone.now().date(), user=self.request.user)
+        habits = self.request.user.habit_set.all()
+        habit_tasks = HabitTask.objects.filter(date=timezone.now().date())
+        return filter(lambda h: h.habit in habits, habit_tasks)
+
+    # def get_queryset(self):
+    #     return HabitTask.objects.filter(date=timezone.now().date(), user=self.request.user)
 
 
 # make a 'create' endpoint
 class CreateHabitTask(generics.CreateAPIView):
-    serializer_class = HabitTaskSerializer
+    serializer_class = HabitTaskWriteSerializer
     queryset = HabitTask.objects.all()
 
 

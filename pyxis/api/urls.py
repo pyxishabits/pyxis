@@ -9,7 +9,7 @@ urlpatterns = [
     path('habits/new/', CreateHabit.as_view()),
 
     path('habittask/', HabitTaskView.as_view()),
-    path('habittask/new', CreateHabitTask.as_view()),
+    path('habittask/new/', CreateHabitTask.as_view()),
     path('habittask/<int:pk>/done/', DoneHabitTask.as_view()),
 
     path('tasks/<int:pk>/', TaskView.as_view()),
