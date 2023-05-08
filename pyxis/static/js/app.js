@@ -5,8 +5,9 @@ new Vue({
         token: '',
         currentUser: '',
         habits: [],
-        habitsPreview: {},
+        habitsPrev: [],
         tasks: {},
+        tasksPrev: [],
         journalEntry: {},
         journalPrev: '',
         daysOfTheWeek: {
@@ -50,11 +51,20 @@ new Vue({
         getHabits() {
             axios.get('api/habits/')
                 .then(response => {
-                    this.habits = response.data
+                    this.habits = response.data.reverse()
                     // TODO: actual day awareness
                     todayHabits = this.habits.filter(h => h.recurrence.includes(5)).reverse()
                     this.getHabitTasks()
+                    this.previewHabit()
                 })
+        },
+        previewHabit() {
+            if (this.habits.length > 0) {
+                this.habitsPrev = this.habits.slice(0,3)
+            }
+            if (this.habits[3] != undefined) {
+                this.habitsPrev.push({"name": "More...!"})
+            }
         },
         getHabitTasks() {
             // TODO: this will need a date query param when the endpoint gets updated
@@ -89,10 +99,6 @@ new Vue({
                 ).then(() => this.getHabitTasks())
             }
         },
-        previewHabit() {
-            // retrieve just first X number of habits for the day
-            // if len of habits exceeds X, add a "More..." to end of list
-        },
         editHabit() {
 
         },
@@ -110,10 +116,19 @@ new Vue({
             this.newHabitDesc = ''
 
         },
+        tasksPreview() {
+            if (this.tasks.length > 0) {
+                this.tasksPrev = this.tasks.slice(0,3)
+            }
+            if (this.tasks[3] != undefined) {
+                this.tasksPrev.push({"name": "More...!"})
+            }
+        },
         getTodayTasks() {
             axios.get('api/tasks/')
                 .then(response => {
                     this.tasks = response.data.reverse()
+                    this.tasksPreview()
                 })
         },
         updateTask(taskID) {
@@ -186,13 +201,15 @@ new Vue({
             ).then(response => {
                 this.journalEntry = response.data
                 this.addJournalWindow = false
+                this.getJournal()
             })
         },
         journalPreview() {
-            // TODO: conditional only if journalEntry.entry not empty
-            const lineBreak = this.journalEntry.entry.split(/\r?\n/)
-            let firstLine = lineBreak[0]
-            this.journalPrev = firstLine
+            if (this.journalEntry.entry != null) {
+                const lineBreak = this.journalEntry.entry.split(/\r?\n/)
+                let firstLine = lineBreak[0]
+                this.journalPrev = firstLine
+            }
         },
         weekNext() {
             this.changeWeekNext = true
@@ -419,6 +436,7 @@ Vue.component('DailyJournal', {
             ).then(response => {
                 this.$parent.journalEntry = response.data
                 this.editJournal = null
+                this.$parent.getJournal()
             })
         }
     },
