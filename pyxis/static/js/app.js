@@ -110,8 +110,10 @@ new Vue({
             this.newHabitDesc = ''
 
         },
-        getTodayTasks() {
-            axios.get('api/tasks/')
+        getTasks() {
+            axios.get('api/tasks/', {
+                params: { date: this.activeDate }
+            })
                 .then(response => {
                     this.tasks = response.data.reverse()
                 })
@@ -161,12 +163,12 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
+            this.getTasks()
         },
         newDate() {
             const newDate = new Date()
             let jsonDate = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toJSON()
             this.activeDateTime = jsonDate
-            console.log(jsonDate)
             let dateString = jsonDate.slice(0, 10)
             return dateString
         },
@@ -211,6 +213,7 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
+            this.getTasks()
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -229,6 +232,7 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
+            this.getTasks()
         },
         getWeek() {
             let curr = new Date
@@ -269,12 +273,12 @@ new Vue({
         },
     },
     mounted() {
+        this.activeDate = this.newDate()
         this.getUser()
         this.getJournal()
-        this.getTodayTasks()
+        this.getTasks()
         this.getWeek()
         this.getHabits()
-        this.activeDate = this.newDate()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
 })
