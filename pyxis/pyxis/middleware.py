@@ -2,6 +2,9 @@
 from django.utils import timezone
  
 class UserTimezoneMiddleware:
+    '''
+Based on this example: https://stackoverflow.com/questions/67371733/django-tz-detect-automatically-save-timezone-to-user-model
+'''
     def __init__(self, get_response):
         self.get_response = get_response
 
