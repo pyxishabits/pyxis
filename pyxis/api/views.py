@@ -109,3 +109,4 @@ class JournalEdit(generics.UpdateAPIView):
 def current_user(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
+
