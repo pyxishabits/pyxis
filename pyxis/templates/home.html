@@ -63,7 +63,6 @@
                 </div>
                 <div v-for="day in daysOfTheWeek" :id="day.name" class="weekday" :class="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
                         {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="viewForDay(day.name)">
-                    <!-- AA was @click="today = day.name"-->
                     [[ day.abbrv ]]
                 </div>
 
@@ -74,7 +73,6 @@
         </header>
 
         <div id="wrapper">
-            <!-- TODO: refine preview content for unauthenticated -->
             {% block content %}
 
             <div id="habits" class="main" :class="[{activeTab: activeHabits}, 
@@ -107,7 +105,6 @@
                                 </div>
                             </div>
                             <div class="input">
-                                <!-- TODO: get recurrence in here somehow -->
                                 <label for="recurrence">Schedule: </label>
                                 <div>
                                     <input type="checkbox" name="sunday" v-model="newRecurrence[0]">
