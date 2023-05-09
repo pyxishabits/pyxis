@@ -55,7 +55,6 @@ new Vue({
             axios.get('api/habits/')
                 .then(response => {
                     this.habits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
-                    todayHabits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
                     this.getHabitTasks()
                     this.previewHabit()
                 })
@@ -72,15 +71,15 @@ new Vue({
             }
         },
         getHabitTasks() {
-            // TODO: this will need a date query param when the endpoint gets updated
-            axios.get('api/habittask/')
+            axios.get('api/habittask/', {
+                params: { date: this.activeDate }
+            })
                 .then(response => {
                     this.todayHabitTasksCreated = response.data
 
-                    this.todayHabitTaskData = todayHabits.map(h => {
+                    this.todayHabitTaskData = this.habits.map(h => {
                         thisHabitTask = this.todayHabitTasksCreated.find(ht => ht.habit.id == h.id)
 
-                        // TODO: what does this actually need?
                         return {
                             habitTask: thisHabitTask,
                             name: h.name,
