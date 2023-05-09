@@ -46,7 +46,7 @@
                 </div>
                 {% else %}
                 <div class="greeting">
-                    <h2>Welcome</h2>
+                    <h2>Pyxis</h2>
                 </div>
                 <div class="auth">
                     <a href="{% url 'login' %}">Login</a> or
@@ -77,6 +77,7 @@
 
         <div id="wrapper">
             {% block content %}
+            <tutorial v-if="!currentUser && showTutorial" @close="showTutorial = false"></tutorial>
 
             <div id="habits" class="main" :class="[{activeTab: activeHabits}, 
                 {inactiveTab: activeTasks || activeJournal }]">
@@ -149,7 +150,7 @@
                         <div>Exercise</div>
                     </div>
                     <div v-if="activeHabits" class="full">
-                        <p>Sign up and get started!</p>
+                        <p>Create habits that repeat on the weekly schedule you want!</p>
                     </div>
                 </div>
                 {% endif %}
@@ -209,24 +210,11 @@
                 {% else %}
                 <div class="show-entry">
                     <div v-if="!activeTasks" class="preview">
-                        <div>THING</div>
-                        <div>THING</div>
-                        <div>THING</div>
+                        <div>Grocery Shop</div>
+                        <div>Clean Home</div>
                     </div>
                     <div v-if="activeTasks" class="full">
-                        <dl>
-                            <dt>THING</dt>
-                            <dd>all about thing</dd>
-                            <dt>THING</dt>
-                            <dd>all about thing</dd>
-                            <dt>THING</dt>
-                            <dd>all about thing</dd>
-                            <dt>THING</dt>
-                            <dd>all about thing</dd>
-                            <dt>THING</dt>
-                            <dd>all about thing</dd>
-                        </dl>
-                        <p>Sign up and get started!</p>
+                        <p>Create tasks per day, edit them as needed!</p>
                     </div>
                 </div>
                 {% endif %}

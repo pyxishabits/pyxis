@@ -3,6 +3,7 @@ new Vue({
     delimiters: ['[[', ']]'],
     data: {
         token: '',
+        showTutorial: true,
         currentUser: '',
         habits: [],
         habitsPrev: [],
@@ -489,7 +490,6 @@ Vue.component('ColorThemes', {
             })
         },
         saveUserTheme() {
-            console.log(this.userTheme)
             if (this.authenticated) {
                 axios.patch(`api/edit/${this.$parent.currentUser}/`, {
                     "color_theme": `${this.userTheme}`
@@ -500,4 +500,42 @@ Vue.component('ColorThemes', {
     mounted() {
         this.userLoggedIn()
     }
+})
+
+Vue.component('Tutorial', {
+    template: `
+    <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+
+              <div class="modal-header">
+                <slot name="header">
+                  <h3>Welcome to Pyxis!</h3>
+                </slot>
+              </div>
+
+              <div class="modal-body">
+                <slot name="body">
+                  <p>make habits.</p>
+                  <p>make tasks?????</p>
+                  <p>make.......... JO UR NAL??????? </p>
+                  <p>F L A V O R text</p>
+                  <p>Click the arrows on the side of the week display to change the active week!
+                  Don't worry if you get too far back- refreshing the page brings you right back
+                  to today.</p>
+                </slot>
+              </div>
+
+              <div class="modal-footer">
+                <slot name="footer">
+                  <button @click="$emit('close')">
+                    Sounds Good!
+                  </button>
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>`,
 })
