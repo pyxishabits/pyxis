@@ -60,10 +60,10 @@ new Vue({
         },
         previewHabit() {
             if (this.habits.length > 0) {
-                this.habitsPrev = this.habits.slice(0,3)
+                this.habitsPrev = this.habits.slice(0, 3)
             }
             if (this.habits[3] != undefined) {
-                this.habitsPrev.push({"name": "More...!"})
+                this.habitsPrev.push({ "name": "More...!" })
             }
         },
         getHabitTasks() {
@@ -118,10 +118,10 @@ new Vue({
         },
         tasksPreview() {
             if (this.tasks.length > 0) {
-                this.tasksPrev = this.tasks.slice(0,3)
+                this.tasksPrev = this.tasks.slice(0, 3)
             }
             if (this.tasks[3] != undefined) {
-                this.tasksPrev.push({"name": "More...!"})
+                this.tasksPrev.push({ "name": "More...!" })
             }
         },
         getTodayTasks() {
@@ -176,12 +176,12 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
+            this.getTasks()
         },
         newDate() {
             const newDate = new Date()
             let jsonDate = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toJSON()
             this.activeDateTime = jsonDate
-            console.log(jsonDate)
             let dateString = jsonDate.slice(0, 10)
             return dateString
         },
@@ -228,6 +228,7 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
+            this.getTasks()
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -246,6 +247,7 @@ new Vue({
             this.activeDateTime = jsonDate
             let dateString = jsonDate.slice(0, 10)
             this.activeDate = dateString
+            this.getTasks()
         },
         getWeek() {
             let curr = new Date
@@ -286,12 +288,12 @@ new Vue({
         },
     },
     mounted() {
+        this.activeDate = this.newDate()
         this.getUser()
         this.getJournal()
-        this.getTodayTasks()
+        this.getTasks()
         this.getWeek()
         this.getHabits()
-        this.activeDate = this.newDate()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
 })
@@ -371,7 +373,7 @@ Vue.component('UserTasks', {
                 "is_urgent": this.editTaskUrgent,
                 "is_important": this.editTaskImportant
             }, { headers: { 'X-CSRFToken': this.$parent.token } }
-            ).then(() => { this.$parent.getTodayTasks() })
+            ).then(() => { this.$parent.getTasks() })
 
             this.editing = null
         },
