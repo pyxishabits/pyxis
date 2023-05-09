@@ -66,11 +66,12 @@ class TaskView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
 
 
-class TaskToday(generics.ListAPIView):
+class TaskPerDay(generics.ListAPIView):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
+        return Task.objects.filter(user=self.request.user, date=date)
 
 
 class CreateTask(generics.CreateAPIView):
