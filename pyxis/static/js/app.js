@@ -129,8 +129,10 @@ new Vue({
                 this.tasksPrev.push({ "name": "More...!" })
             }
         },
-        getTodayTasks() {
-            axios.get('api/tasks/')
+        getTasks() {
+            axios.get('api/tasks/', {
+                params: { date: this.activeDate }
+            })
                 .then(response => {
                     this.tasks = response.data.reverse()
                     this.tasksPreview()
@@ -139,12 +141,12 @@ new Vue({
         updateTask(taskID) {
             axios.patch(`api/tasks/${taskID}/done/`, {},
                 { headers: { 'X-CSRFToken': this.token } }
-            ).then(() => this.getTodayTasks())
+            ).then(() => this.getTasks())
         },
         deleteTask(taskID) {
             axios.delete(`api/tasks/${taskID}/`, {
                 headers: { 'X-CSRFToken': this.token }
-            }).then(() => this.getTodayTasks())
+            }).then(() => this.getTasks())
         },
         addTask() {
             axios.post(`api/tasks/new/`, {
@@ -157,7 +159,7 @@ new Vue({
                 "due_date": this.newTaskDue,
                 "user": this.currentUser
             }, { headers: { 'X-CSRFToken': this.token } })
-                .then(() => this.getTodayTasks())
+                .then(() => this.getTasks())
             this.addTaskWindow = false
             this.newTaskName = ''
             this.newTaskDesc = ''
