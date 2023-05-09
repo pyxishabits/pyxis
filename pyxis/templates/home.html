@@ -110,13 +110,20 @@
                             </div>
                             <div class="input">
                                 <label for="recurrence">Schedule: </label>
-                                <div>
+                                <div class="habit-scheduler">
+                                    <label for="sunday">S</label>
                                     <input type="checkbox" name="sunday" v-model="newRecurrence[0]">
+                                    <label for="monday">M</label>
                                     <input type="checkbox" name="monday" v-model="newRecurrence[1]">
+                                    <label for="week-tue">T</label>
                                     <input type="checkbox" name="tuesday" v-model="newRecurrence[2]">
+                                    <label for="week-wed">W</label>
                                     <input type="checkbox" name="wednesday" v-model="newRecurrence[3]">
+                                    <label for="week-thu">T</label>
                                     <input type="checkbox" name="thursday" v-model="newRecurrence[4]">
+                                    <label for="week-fri">F</label>
                                     <input type="checkbox" name="friday" v-model="newRecurrence[5]">
+                                    <label for="week-sat">S</label>
                                     <input type="checkbox" name="saturday" v-model="newRecurrence[6]">
                                 </div>
                             </div>

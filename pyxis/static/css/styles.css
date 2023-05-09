@@ -224,6 +224,23 @@ h3 {
     background-color: var(--subtle-accent);
 }
 
+.habit-scheduler input[type=checkbox] {
+    width: 1.3em;
+    height: 1.3em;
+    background-color: var(--light-accent);
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 0px solid;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.habit-scheduler input[type=checkbox]:checked {
+    background-color: var(--color-accent);
+}
+
 .detail {
     margin: 0.5em;
     line-height: 1.3em;
