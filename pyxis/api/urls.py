@@ -13,7 +13,7 @@ urlpatterns = [
     path('habittask/<int:pk>/done/', DoneHabitTask.as_view()),
 
     path('tasks/<int:pk>/', TaskView.as_view()),
-    path('tasks/', TaskToday.as_view()),
+    path('tasks/', TaskPerDay.as_view()),
     path('tasks/new/', CreateTask.as_view()),
     path('tasks/<int:pk>/done/', DoneTask.as_view()),
     path('journal/', get_journal),

@@ -202,7 +202,7 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <user-tasks v-for="t in tasks" v-if="t.date === activeDate" :task="t" :key="t.id"
+                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
                             @update="updateTask" @delete="deleteTask">
                         </user-tasks>
                     </div>

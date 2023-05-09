@@ -39,7 +39,7 @@ new Vue({
         newJournal: '',
         newHabitName: '',
         newHabitDesc: '',
-        newRecurrence: [false,false,false,false,false,false,false,],
+        newRecurrence: [false, false, false, false, false, false, false,],
         todayHabitTasksAll: [],
         todayHabitTasksCreated: [],
         todayHabitTaskData: []
@@ -101,7 +101,7 @@ new Vue({
         },
         addHabit() {
             let sched = this.newRecurrence.reduce((day, bool, index) => bool ? day.concat(index, ',') : day, '')
-            let recurrence = sched.slice(0,-1)
+            let recurrence = sched.slice(0, -1)
 
             axios.post(`api/habits/new/`, {
                 "name": this.newHabitName,
@@ -116,8 +116,10 @@ new Vue({
             this.newHabitDesc = ''
 
         },
-        getTodayTasks() {
-            axios.get('api/tasks/')
+        getTasks() {
+            axios.get('api/tasks/', {
+                params: { date: this.activeDate }
+            })
                 .then(response => {
                     this.tasks = response.data.reverse()
                 })
@@ -169,12 +171,12 @@ new Vue({
             this.activeDate = dateString
 
             this.getHabits()
+            this.getTasks()
         },
         newDate() {
             const newDate = new Date()
             let jsonDate = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()).toJSON()
             this.activeDateTime = jsonDate
-            console.log(jsonDate)
             let dateString = jsonDate.slice(0, 10)
             return dateString
         },
@@ -221,6 +223,7 @@ new Vue({
             this.activeDate = dateString
 
             this.getHabits()
+            this.getTasks()
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -241,6 +244,7 @@ new Vue({
             this.activeDate = dateString
 
             this.getHabits()
+            this.getTasks()
         },
         getWeek() {
             let curr = new Date
@@ -284,7 +288,7 @@ new Vue({
         this.activeDate = this.newDate()
         this.getUser()
         this.getJournal()
-        this.getTodayTasks()
+        this.getTasks()
         this.getWeek()
         this.getHabits()
         this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
@@ -366,7 +370,7 @@ Vue.component('UserTasks', {
                 "is_urgent": this.editTaskUrgent,
                 "is_important": this.editTaskImportant
             }, { headers: { 'X-CSRFToken': this.$parent.token } }
-            ).then(() => { this.$parent.getTodayTasks() })
+            ).then(() => { this.$parent.getTasks() })
 
             this.editing = null
         },
