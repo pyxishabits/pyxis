@@ -52,13 +52,15 @@ new Vue({
         getHabits() {
             const activeIndex = new Date(this.activeDateTime).getDay()
 
-            axios.get('api/habits/')
+            if (this.currentUser) {
+                axios.get('api/habits/')
                 .then(response => {
                     this.habits = response.data
                     todayHabits = this.habits.filter(h => h.recurrence.includes(activeIndex)).reverse()
                     this.getHabitTasks()
                     this.previewHabit()
                 })
+            }
         },
         previewHabit() {
             if (this.habits.length > 0) {
@@ -130,13 +132,15 @@ new Vue({
             }
         },
         getTasks() {
-            axios.get('api/tasks/', {
-                params: { date: this.activeDate }
-            })
-                .then(response => {
-                    this.tasks = response.data.reverse()
-                    this.tasksPreview()
+            if (this.currentUser) {
+                axios.get('api/tasks/', {
+                    params: { date: this.activeDate }
                 })
+                    .then(response => {
+                        this.tasks = response.data.reverse()
+                        this.tasksPreview()
+                    })
+            }
         },
         updateTask(taskID) {
             axios.patch(`api/tasks/${taskID}/done/`, {},

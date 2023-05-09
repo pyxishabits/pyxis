@@ -142,26 +142,16 @@
 
                 {% else %}
 
-                <div v-if="!activeHabits" class="preview">
-                    <div>THING</div>
-                    <div>THING</div>
-                    <div>THING</div>
+                <div class="show-entry">
+                    <div v-if="!activeHabits" class="preview">
+                        <div>Walk Dog</div>
+                        <div>Meal Prep</div>
+                        <div>Exercise</div>
+                    </div>
+                    <div v-if="activeHabits" class="full">
+                        <p>Sign up and get started!</p>
+                    </div>
                 </div>
-                <div v-if="activeHabits" class="full">
-                    <dl>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                        <dt>THING</dt>
-                        <dd>all about thing</dd>
-                    </dl>
-                </div>
-                <p>Sign up and get started!</p>
                 {% endif %}
             </div>
 
