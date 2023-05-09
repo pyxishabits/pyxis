@@ -47,7 +47,7 @@ new Vue({
     },
     methods: {
         getUser() {
-            axios.get('/api/').then(res => this.currentUser = res.data.id)
+            axios.get('api/current/').then(res => this.currentUser = res.data.id)
         },
         getHabits() {
             const activeIndex = new Date(this.activeDateTime).getDay()
@@ -196,13 +196,16 @@ new Vue({
         },
         getJournal() {
             let todayJournal = this.newDate()
-            axios.get('api/journal/', {
-                params: { date: todayJournal }
-            })
-                .then(response => {
-                    this.journalEntry = response.data
-                    this.journalPreview()
+
+            if (this.currentUser) {
+                axios.get('api/journal/', {
+                    params: { date: todayJournal }
                 })
+                    .then(response => {
+                        this.journalEntry = response.data
+                        this.journalPreview()
+                    })
+            }
         },
         createJournal(journalID) {
             axios.patch(`api/journal/${journalID}/edit/`,
@@ -457,5 +460,40 @@ Vue.component('DailyJournal', {
     },
     mounted() {
         this.editEntry = this.journal.entry
+    }
+})
+
+Vue.component('ColorThemes', {
+    template: `
+        <div>
+            <input type="radio" value="D"  id="dark" v-model="userTheme" @change="saveUserTheme">
+            <input type="radio" value="L" id="light" v-model="userTheme" @change="saveUserTheme">
+        </div>`,
+    data: () => {
+        return {
+            userTheme: 'L',
+            authenticated: false
+        }
+    },
+    methods: {
+        userLoggedIn() {
+            axios.get('api/current/').then(response => {
+                if (response.data.username != '') {
+                    this.authenticated = true
+                    this.userTheme = response.data.color_theme
+                }
+            })
+        },
+        saveUserTheme() {
+            console.log(this.userTheme)
+            if (this.authenticated) {
+                axios.patch(`api/edit/${this.$parent.currentUser}/`, {
+                    "color_theme": `${this.userTheme}`
+                }, { headers: { 'X-CSRFToken': this.$parent.token } })
+            }
+        }
+    },
+    mounted() {
+        this.userLoggedIn()
     }
 })

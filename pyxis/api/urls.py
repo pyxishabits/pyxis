@@ -18,7 +18,7 @@ urlpatterns = [
     path('tasks/<int:pk>/done/', DoneTask.as_view()),
     path('journal/', get_journal),
     path('journal/<int:pk>/edit/', JournalEdit.as_view()),
-    path('', views.current_user, name='current_user'),
 
-  
+    path('current/', views.current_user, name='current_user'),
+    path('edit/<int:pk>/', ThemeEdit.as_view())
 ]

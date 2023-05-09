@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from tasks.models import *
+from accounts.models import CustomUser
 from django.utils import timezone
 from .serializers import *
 from datetime import datetime
@@ -111,3 +112,7 @@ def current_user(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
+class ThemeEdit(generics.UpdateAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        return CustomUser.objects.filter(username=self.request.user)
