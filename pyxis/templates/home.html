@@ -86,7 +86,7 @@
 
                 <div class="show-entry">
                     <div v-if="!activeHabits" class="preview">
-                        <div v-for="h in habitsPreview">
+                        <div v-for="h of habitsPrev">
                             [[ h.name ]]
                         </div>
                     </div>
@@ -173,9 +173,9 @@
 
                 <div class="show-entry">
                     <div v-if="!activeTasks" class="preview">
-                        <!-- <div v-for="t in taskPreview">
+                        <div v-for="t in tasksPrev">
                             [[ t.name ]]
-                        </div> -->
+                        </div>
                     </div>
                     <div v-if="activeTasks" class="full">
                         <div v-if="addTaskWindow" class="add-window">
