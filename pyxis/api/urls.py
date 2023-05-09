@@ -19,4 +19,6 @@ urlpatterns = [
     path('journal/', get_journal),
     path('journal/<int:pk>/edit/', JournalEdit.as_view()),
     path('', views.current_user, name='current_user'),
+
+  
 ]
