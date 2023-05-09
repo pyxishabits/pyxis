@@ -78,7 +78,7 @@ new Vue({
                     this.todayHabitTasksCreated = response.data
 
                     this.todayHabitTaskData = this.habits.map(h => {
-                        thisHabitTask = this.todayHabitTasksCreated.find(ht => ht.habit.id == h.id)
+                        let thisHabitTask = this.todayHabitTasksCreated.find(ht => ht.habit.id == h.id)
 
                         return {
                             habitTask: thisHabitTask,
