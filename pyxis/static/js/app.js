@@ -358,7 +358,7 @@ Vue.component('UserTasks', {
                 "is_urgent": this.editTaskUrgent,
                 "is_important": this.editTaskImportant
             }, { headers: { 'X-CSRFToken': this.$parent.token } }
-            ).then(() => { this.$parent.getTodayTasks() })
+            ).then(() => { this.$parent.getTasks() })
 
             this.editing = null
         },
