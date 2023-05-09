@@ -54,15 +54,18 @@ new Vue({
 
             axios.get('api/habits/')
                 .then(response => {
-                    this.habits = response.data
-                    todayHabits = this.habits.filter(h => h.recurrence.includes(activeIndex)).reverse()
+                    this.habits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
+                    todayHabits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
                     this.getHabitTasks()
                     this.previewHabit()
                 })
         },
         previewHabit() {
+            this.habitsPrev = []
             if (this.habits.length > 0) {
                 this.habitsPrev = this.habits.slice(0, 3)
+            } else if (this.habits.length === 0) {
+                this.habitsPrev.push({ "name": "Add some new habits!" })
             }
             if (this.habits[3] != undefined) {
                 this.habitsPrev.push({ "name": "More...!" })
@@ -92,9 +95,8 @@ new Vue({
                     { headers: { 'X-CSRFToken': this.token } }
                 ).then(() => this.getHabitTasks())
             } else {
-                // TODO: make this the selected date
                 axios.post(`api/habittask/new/`, {
-                    "date": this.newDate(),
+                    "date": this.activeDate,
                     "habit": habitTaskData.habit.id,
                     "completed_time": new Date(),
                 }, { headers: { 'X-CSRFToken': this.token } }
@@ -122,8 +124,11 @@ new Vue({
 
         },
         tasksPreview() {
+            this.tasksPrev = []
             if (this.tasks.length > 0) {
                 this.tasksPrev = this.tasks.slice(0, 3)
+            } else if (this.tasks.length === 0) {
+                this.tasksPrev.push({ "name": "Add some new tasks!" })
             }
             if (this.tasks[3] != undefined) {
                 this.tasksPrev.push({ "name": "More...!" })
@@ -152,7 +157,7 @@ new Vue({
             axios.post(`api/tasks/new/`, {
                 "name": this.newTaskName,
                 "description": this.newTaskDesc,
-                "date": this.newDate(),
+                "date": this.activeDate,
                 "completed_time": null,
                 "is_urgent": this.newTaskUrgent,
                 "is_important": this.newTaskImportant,
@@ -186,6 +191,7 @@ new Vue({
 
             this.getHabits()
             this.getTasks()
+            this.getJournal()
         },
         newDate() {
             const newDate = new Date()
@@ -195,9 +201,8 @@ new Vue({
             return dateString
         },
         getJournal() {
-            let todayJournal = this.newDate()
             axios.get('api/journal/', {
-                params: { date: todayJournal }
+                params: { date: this.activeDate }
             })
                 .then(response => {
                     this.journalEntry = response.data
@@ -240,6 +245,7 @@ new Vue({
 
             this.getHabits()
             this.getTasks()
+            this.getJournal()
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -261,6 +267,7 @@ new Vue({
 
             this.getHabits()
             this.getTasks()
+            this.getJournal()
         },
         getWeek() {
             let curr = new Date
