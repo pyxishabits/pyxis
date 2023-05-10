@@ -3,6 +3,7 @@ new Vue({
     delimiters: ['[[', ']]'],
     data: {
         token: '',
+        showTutorial: true,
         currentUser: '',
         habits: [],
         habitsPrev: [],
@@ -48,17 +49,19 @@ new Vue({
     },
     methods: {
         getUser() {
-            axios.get('/api/').then(res => this.currentUser = res.data.id)
+            axios.get('api/current/').then(res => this.currentUser = res.data.id)
         },
         getHabits() {
             const activeIndex = new Date(this.activeDateTime).getDay()
 
-            axios.get('api/habits/')
+            if (this.currentUser) {
+                axios.get('api/habits/')
                 .then(response => {
                     this.habits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
                     this.getHabitTasks()
                     this.previewHabit()
                 })
+            }
         },
         previewHabit() {
             this.habitsPrev = []
@@ -135,13 +138,15 @@ new Vue({
             }
         },
         getTasks() {
-            axios.get('api/tasks/', {
-                params: { date: this.activeDate }
-            })
-                .then(response => {
-                    this.tasks = response.data.reverse()
-                    this.tasksPreview()
+            if (this.currentUser) {
+                axios.get('api/tasks/', {
+                    params: { date: this.activeDate }
                 })
+                    .then(response => {
+                        this.tasks = response.data.reverse()
+                        this.tasksPreview()
+                    })
+            }
 
             axios.get('api/tasks/donetoday/', {
                 params: { date: this.activeDate }
@@ -208,13 +213,17 @@ new Vue({
             return dateString
         },
         getJournal() {
-            axios.get('api/journal/', {
-                params: { date: this.activeDate }
-            })
-                .then(response => {
-                    this.journalEntry = response.data
-                    this.journalPreview()
+            let todayJournal = this.newDate()
+
+            if (this.currentUser) {
+                axios.get('api/journal/', {
+                    params: { date: todayJournal }
                 })
+                    .then(response => {
+                        this.journalEntry = response.data
+                        this.journalPreview()
+                    })
+            }
         },
         createJournal(journalID) {
             axios.patch(`api/journal/${journalID}/edit/`,
@@ -474,4 +483,77 @@ Vue.component('DailyJournal', {
     mounted() {
         this.editEntry = this.journal.entry
     }
+})
+
+Vue.component('ColorThemes', {
+    template: `
+        <div>
+            <input type="radio" value="D"  id="dark" v-model="userTheme" @change="saveUserTheme">
+            <input type="radio" value="L" id="light" v-model="userTheme" @change="saveUserTheme">
+            <input type="radio" value="C" id="colorblind" v-model="userTheme" @change="saveUserTheme">
+        </div>`,
+    data: () => {
+        return {
+            userTheme: 'L',
+            authenticated: false
+        }
+    },
+    methods: {
+        userLoggedIn() {
+            axios.get('api/current/').then(response => {
+                if (response.data.username != '') {
+                    this.authenticated = true
+                    this.userTheme = response.data.color_theme
+                }
+            })
+        },
+        saveUserTheme() {
+            if (this.authenticated) {
+                axios.patch(`api/edit/${this.$parent.currentUser}/`, {
+                    "color_theme": `${this.userTheme}`
+                }, { headers: { 'X-CSRFToken': this.$parent.token } })
+            }
+        }
+    },
+    mounted() {
+        this.userLoggedIn()
+    }
+})
+
+Vue.component('Tutorial', {
+    template: `
+    <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+
+              <div class="modal-header">
+                <slot name="header">
+                  <h3>Welcome to Pyxis!</h3>
+                </slot>
+              </div>
+
+              <div class="modal-body">
+                <slot name="body">
+                  <p>make habits.</p>
+                  <p>make tasks?????</p>
+                  <p>make.......... JO UR NAL??????? </p>
+                  <p>F L A V O R text</p>
+                  <p>Click the arrows on the side of the week display to change the active week!
+                  Don't worry if you get too far back- refreshing the page brings you right back
+                  to today.</p>
+                </slot>
+              </div>
+
+              <div class="modal-footer">
+                <slot name="footer">
+                  <button @click="$emit('close')">
+                    Sounds Good!
+                  </button>
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>`,
 })
