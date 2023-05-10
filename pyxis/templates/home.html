@@ -22,7 +22,7 @@
 <body>
     
     {% load tz_detect %}
-    It is {% now "jS F Y H:i" %}
+    <!-- It is {% now "jS F Y H:i" %} -->
     {% tz_detect %}
     <div id="app">
         {% csrf_token %}
@@ -206,7 +206,7 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
+                        <user-tasks :tasks="tasks" :key="tasks.id" :completed="completedTasks"
                             @update="updateTask" @delete="deleteTask">
                         </user-tasks>
                     </div>
@@ -255,7 +255,7 @@
 
                 <div class="show-entry">
                     <div v-if="!activeJournal" class="preview">
-                        <span v-if="!journalEntry.entry">You have no Journal for today yet!</span>
+                        <span v-if="!journalEntry.entry">You have no Journal for this [[today]] yet!</span>
                         <span v-else>[[ journalPrev ]]</span>
                     </div>
 

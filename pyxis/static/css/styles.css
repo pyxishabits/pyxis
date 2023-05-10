@@ -41,6 +41,7 @@ a {
 }
 
 h3 {
+    padding: 0;
     margin: 0.7em 0 1em 0;
     color: var(--color-accent);
     font-family: 'Bebas Neue', cursive;
@@ -203,7 +204,7 @@ h3 {
 
 .add-entry {
     grid-area: add;
-    margin: 0 0.3em 1em 0.3em;
+    margin: 0.5em 0.3em 1em 0.3em;
     align-self: end;
     display: flex;
     justify-content: flex-end;
@@ -245,14 +246,26 @@ h3 {
     margin: 0 0 0.5em 1em;
 }
 
+.active {
+    margin-top: 0.5em;
+}
+
+.completed {
+    margin-top: 0.5em;
+    color: var(--dark-accent);
+}
+
 .inactiveTab {
     height: 3em;
     padding: 0;
 }
 
 .inactiveTab h3 {
-    padding: 0 0.5em 0 1em;
     margin: 0;
+}
+
+.inactiveTab .show-entry {
+    display: none;
 }
 
 .activeTab {
@@ -260,6 +273,10 @@ h3 {
     min-height: fit-content;
     overflow: hidden scroll;
     z-index: 3;
+}
+
+.activeTab .show-entry {
+    display: unset;
 }
 
 .preview {
@@ -270,6 +287,7 @@ h3 {
 }
 
 .preview > div {
+    height: 100%;
     width: 6em;
     text-align: center;
 }

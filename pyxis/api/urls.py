@@ -14,11 +14,10 @@ urlpatterns = [
 
     path('tasks/<int:pk>/', TaskView.as_view()),
     path('tasks/', TaskPerDay.as_view()),
+    path('tasks/donetoday/', CompletedTasks.as_view()),
     path('tasks/new/', CreateTask.as_view()),
     path('tasks/<int:pk>/done/', DoneTask.as_view()),
     path('journal/', get_journal),
     path('journal/<int:pk>/edit/', JournalEdit.as_view()),
     path('', views.current_user, name='current_user'),
-
-  
 ]
