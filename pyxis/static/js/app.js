@@ -3,13 +3,14 @@ new Vue({
     delimiters: ['[[', ']]'],
     data: {
         token: '',
+        viewMenu: false,
         showTutorial: true,
         currentUser: '',
         habits: [],
         habitsPrev: [],
-        tasks: {},
+        tasks: [],
         tasksPrev: [],
-        completedTasks: {},
+        completedTasks: [],
         journalEntry: {},
         journalPrev: '',
         daysOfTheWeek: {
