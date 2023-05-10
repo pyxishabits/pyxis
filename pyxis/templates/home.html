@@ -206,7 +206,7 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <user-tasks v-for="t in tasks" :task="t" :key="t.id"
+                        <user-tasks :tasks="tasks" :key="tasks.id" :completed="completedTasks"
                             @update="updateTask" @delete="deleteTask">
                         </user-tasks>
                     </div>

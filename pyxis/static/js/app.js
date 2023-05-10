@@ -8,6 +8,7 @@ new Vue({
         habitsPrev: [],
         tasks: {},
         tasksPrev: [],
+        completedTasks: {},
         journalEntry: {},
         journalPrev: '',
         daysOfTheWeek: {
@@ -140,6 +141,13 @@ new Vue({
                 .then(response => {
                     this.tasks = response.data.reverse()
                     this.tasksPreview()
+                })
+
+            axios.get('api/tasks/donetoday/', {
+                params: { date: this.activeDate }
+            })
+                .then(response => {
+                    this.completedTasks = response.data.reverse()
                 })
         },
         updateTask(taskID) {
@@ -321,55 +329,61 @@ new Vue({
 Vue.component('UserTasks', {
     template: `
         <div>
-        <span v-if="!task.completed_time" @click="$emit('update', task.id)">
-            <i class="fa-regular fa-square"></i>
-        </span>
-        <span v-else-if="task.completed_time" @click="$emit('update', task.id)">
-            <i class="fa-solid fa-square-check"></i>
-        </span>
-        <span v-if="editing === null" class="name">[[ task.name ]]</span>
-        <span v-else-if="editing === task.id">
-            <input type="text" v-model="editTaskName" class="editfield">
-        </span>
-        <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle"></i>
-        <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
-            <div>
-                <span v-if="editing === null" class="detail descrip">[[ task.description ]]</span>
-                <div v-else-if="editing === task.id">
-                <textarea v-model="editTaskDesc" class="editfield"></textarea>
+            <div v-for="task in tasks" class="active">
+                <i class="fa-regular fa-square" @click="$emit('update', task.id)"></i>
+                <span v-if="editing != task.id" class="name">[[ task.name ]]</span>
+                <span v-else-if="editing === task.id">
+                    <input type="text" v-model="editTaskName" class="editfield">
+                </span>
+                <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle(task)"></i>
+                <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
+                <div>
+                    <span v-if="editing != task.id" class="detail descrip">[[ task.description ]]</span>
+                    <div v-else-if="editing === task.id">
+                    <textarea v-model="editTaskDesc" class="editfield"></textarea>
+                    </div>
+                </div>
+                <div>
+                    <span v-if="task.is_urgent">
+                        <span v-if="editing != task.id" class="detail">
+                            URGENT
+                        </span>
+                    </span>
+                    <span v-if="editing === task.id">
+                        Urgent: <input type="checkbox" v-model="editTaskUrgent">
+                    </span>
+                    <span v-if="task.is_important">
+                        <span v-if="editing != task.id" class="detail">
+                            IMPORTANT
+                        </span>
+                    </span>
+                    <span v-if="editing === task.id">
+                        Important: <input type="checkbox" v-model="editTaskImportant">
+                    </span>
+                </div>
+                <div v-if="task.due_date">
+                    <span v-if="editing != task.id" class="detail">Due: [[ dueDate(task.due_date) ]]</span>
+                </div>
+                <div v-if="editing === task.id">
+                        <input type="date" v-model="editTaskDue" class="editfield">
+                </div>
+                <button v-if="editing === task.id" @click="editTask(task.id)" class="save">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </button>
+            </div>
+            <div v-for="task in completed" class="completed">
+                <i class="fa-solid fa-square-check" @click="$emit('update', task.id)"></i>
+                <span class="name">[[ task.name ]]</span>
+                <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
+                <div>
+                    <span class="detail descrip">[[ task.description ]]</span>
                 </div>
             </div>
-            <div>
-                <span v-if="task.is_urgent">
-                    <span v-if="editing === null" class="detail">
-                        URGENT
-                    </span>
-                </span>
-                <span v-if="editing === task.id">
-                    Urgent: <input type="checkbox" v-model="editTaskUrgent">
-                </span>
-                <span v-if="task.is_important">
-                    <span v-if="editing === null" class="detail">
-                        IMPORTANT
-                    </span>
-                </span>
-                <span v-if="editing === task.id">
-                    Important: <input type="checkbox" v-model="editTaskImportant">
-                </span>
-            </div>
-            <div v-if="task.due_date">
-                <span v-if="editing === null" class="detail">Due: [[ dueDisplay ]]</span>
-                <span v-else-if="editing === task.id">
-                    <input type="date" v-model="editTaskDue" class="editfield">
-                </span>
-            </div> 
-            <button v-if="editing === task.id" @click="editTask" class="save">
-                <i class="fa-solid fa-floppy-disk"></i>
-            </button>
         </div>
         `,
     props: {
-        task: Object,
+        tasks: Array,
+        completed: Array,
     },
     delimiters: ['[[', ']]'],
     data: () => {
@@ -384,8 +398,8 @@ Vue.component('UserTasks', {
         }
     },
     methods: {
-        editTask() {
-            axios.patch(`api/tasks/${this.task.id}/`, {
+        editTask(taskID) {
+            axios.patch(`api/tasks/${taskID}/`, {
                 "name": this.editTaskName,
                 "description": this.editTaskDesc,
                 "due_date": this.editTaskDue,
@@ -396,29 +410,25 @@ Vue.component('UserTasks', {
 
             this.editing = null
         },
-        editToggle() {
-            if (this.editing === null) {
-                return this.editing = this.task.id
-            } else { return this.editing = null }
+        editToggle(task) {
+            if (this.editing != task.id) {
+                this.editing = task.id
+                this.editTaskName = task.name
+                this.editTaskDesc = task.description
+                this.editTaskDue = this.dueDate(task.due_date)
+                this.editTaskUrgent = task.is_urgent
+                this.editTaskImportant = task.is_important
+            } else { this.editing = null }
         },
-        dueDate() {
-            const newDate = new Date(this.task.due_date)
-            let jsonDate = newDate.toJSON()
-            let dateString = jsonDate.slice(0, 10)
-            this.dueDisplay = dateString
+        dueDate(datetime) {
+            if (datetime) {
+                const newDate = new Date(datetime)
+                let jsonDate = newDate.toJSON()
+                let dateString = jsonDate.slice(0, 10)
+                return dateString
+            } else {return null}
         },
     },
-    mounted() {
-        this.dueDate()
-        this.editTaskName = this.task.name
-        this.editTaskDesc = this.task.description
-        this.editTaskDue = this.dueDate()
-        this.editTaskUrgent = this.task.is_urgent
-        this.editTaskImportant = this.task.is_important
-    },
-    updated() {
-        this.dueDate()
-    }
 })
 
 Vue.component('DailyJournal', {

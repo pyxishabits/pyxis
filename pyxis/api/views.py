@@ -72,7 +72,15 @@ class TaskPerDay(generics.ListAPIView):
 
     def get_queryset(self):
         date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
-        return Task.objects.filter(user=self.request.user, date=date)
+        return Task.objects.filter(user=self.request.user, date__lte=date, completed_time=None)
+
+
+class CompletedTasks(generics.ListAPIView):
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
+        return Task.objects.filter(user=self.request.user, completed_time__contains=date)
 
 
 class CreateTask(generics.CreateAPIView):
