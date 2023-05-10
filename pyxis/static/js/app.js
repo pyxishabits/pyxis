@@ -3,11 +3,13 @@ new Vue({
     delimiters: ['[[', ']]'],
     data: {
         token: '',
+        showTutorial: true,
         currentUser: '',
         habits: [],
         habitsPrev: [],
         tasks: {},
         tasksPrev: [],
+        completedTasks: {},
         journalEntry: {},
         journalPrev: '',
         daysOfTheWeek: {
@@ -47,37 +49,41 @@ new Vue({
     },
     methods: {
         getUser() {
-            axios.get('/api/').then(res => this.currentUser = res.data.id)
+            axios.get('api/current/').then(res => this.currentUser = res.data.id)
         },
         getHabits() {
             const activeIndex = new Date(this.activeDateTime).getDay()
 
-            axios.get('api/habits/')
+            if (this.currentUser) {
+                axios.get('api/habits/')
                 .then(response => {
-                    this.habits = response.data
-                    todayHabits = this.habits.filter(h => h.recurrence.includes(activeIndex)).reverse()
+                    this.habits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
                     this.getHabitTasks()
                     this.previewHabit()
                 })
+            }
         },
         previewHabit() {
+            this.habitsPrev = []
             if (this.habits.length > 0) {
                 this.habitsPrev = this.habits.slice(0, 3)
+            } else if (this.habits.length === 0) {
+                this.habitsPrev.push({ "name": "Add some new habits!" })
             }
             if (this.habits[3] != undefined) {
                 this.habitsPrev.push({ "name": "More...!" })
             }
         },
         getHabitTasks() {
-            // TODO: this will need a date query param when the endpoint gets updated
-            axios.get('api/habittask/')
+            axios.get('api/habittask/', {
+                params: { date: this.activeDate }
+            })
                 .then(response => {
                     this.todayHabitTasksCreated = response.data
 
-                    this.todayHabitTaskData = todayHabits.map(h => {
-                        thisHabitTask = this.todayHabitTasksCreated.find(ht => ht.habit.id == h.id)
+                    this.todayHabitTaskData = this.habits.map(h => {
+                        let thisHabitTask = this.todayHabitTasksCreated.find(ht => ht.habit.id == h.id)
 
-                        // TODO: what does this actually need?
                         return {
                             habitTask: thisHabitTask,
                             name: h.name,
@@ -92,9 +98,8 @@ new Vue({
                     { headers: { 'X-CSRFToken': this.token } }
                 ).then(() => this.getHabitTasks())
             } else {
-                // TODO: make this the selected date
                 axios.post(`api/habittask/new/`, {
-                    "date": this.newDate(),
+                    "date": this.activeDate,
                     "habit": habitTaskData.habit.id,
                     "completed_time": new Date(),
                 }, { headers: { 'X-CSRFToken': this.token } }
@@ -129,20 +134,32 @@ new Vue({
 
         },
         tasksPreview() {
+            this.tasksPrev = []
             if (this.tasks.length > 0) {
                 this.tasksPrev = this.tasks.slice(0, 3)
+            } else if (this.tasks.length === 0) {
+                this.tasksPrev.push({ "name": "Add some new tasks!" })
             }
             if (this.tasks[3] != undefined) {
                 this.tasksPrev.push({ "name": "More...!" })
             }
         },
         getTasks() {
-            axios.get('api/tasks/', {
+            if (this.currentUser) {
+                axios.get('api/tasks/', {
+                    params: { date: this.activeDate }
+                })
+                    .then(response => {
+                        this.tasks = response.data.reverse()
+                        this.tasksPreview()
+                    })
+            }
+
+            axios.get('api/tasks/donetoday/', {
                 params: { date: this.activeDate }
             })
                 .then(response => {
-                    this.tasks = response.data.reverse()
-                    this.tasksPreview()
+                    this.completedTasks = response.data.reverse()
                 })
         },
         updateTask(taskID) {
@@ -159,7 +176,7 @@ new Vue({
             axios.post(`api/tasks/new/`, {
                 "name": this.newTaskName,
                 "description": this.newTaskDesc,
-                "date": this.newDate(),
+                "date": this.activeDate,
                 "completed_time": null,
                 "is_urgent": this.newTaskUrgent,
                 "is_important": this.newTaskImportant,
@@ -193,6 +210,7 @@ new Vue({
 
             this.getHabits()
             this.getTasks()
+            this.getJournal()
         },
         newDate() {
             const newDate = new Date()
@@ -203,13 +221,16 @@ new Vue({
         },
         getJournal() {
             let todayJournal = this.newDate()
-            axios.get('api/journal/', {
-                params: { date: todayJournal }
-            })
-                .then(response => {
-                    this.journalEntry = response.data
-                    this.journalPreview()
+
+            if (this.currentUser) {
+                axios.get('api/journal/', {
+                    params: { date: todayJournal }
                 })
+                    .then(response => {
+                        this.journalEntry = response.data
+                        this.journalPreview()
+                    })
+            }
         },
         createJournal(journalID) {
             axios.patch(`api/journal/${journalID}/edit/`,
@@ -247,6 +268,7 @@ new Vue({
 
             this.getHabits()
             this.getTasks()
+            this.getJournal()
         },
         weekPrev() {
             this.changeWeekPrev = true
@@ -268,6 +290,7 @@ new Vue({
 
             this.getHabits()
             this.getTasks()
+            this.getJournal()
         },
         getWeek() {
             let curr = new Date
@@ -322,55 +345,61 @@ new Vue({
 Vue.component('UserTasks', {
     template: `
         <div>
-        <span v-if="!task.completed_time" @click="$emit('update', task.id)">
-            <i class="fa-regular fa-square"></i>
-        </span>
-        <span v-else-if="task.completed_time" @click="$emit('update', task.id)">
-            <i class="fa-solid fa-square-check"></i>
-        </span>
-        <span v-if="editing === null" class="name">[[ task.name ]]</span>
-        <span v-else-if="editing === task.id">
-            <input type="text" v-model="editTaskName" class="editfield">
-        </span>
-        <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle"></i>
-        <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
-            <div>
-                <span v-if="editing === null" class="detail descrip">[[ task.description ]]</span>
-                <div v-else-if="editing === task.id">
-                <textarea v-model="editTaskDesc" class="editfield"></textarea>
+            <div v-for="task in tasks" class="active">
+                <i class="fa-regular fa-square" @click="$emit('update', task.id)"></i>
+                <span v-if="editing != task.id" class="name">[[ task.name ]]</span>
+                <span v-else-if="editing === task.id">
+                    <input type="text" v-model="editTaskName" class="editfield">
+                </span>
+                <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle(task)"></i>
+                <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
+                <div>
+                    <span v-if="editing != task.id" class="detail descrip">[[ task.description ]]</span>
+                    <div v-else-if="editing === task.id">
+                    <textarea v-model="editTaskDesc" class="editfield"></textarea>
+                    </div>
+                </div>
+                <div>
+                    <span v-if="task.is_urgent">
+                        <span v-if="editing != task.id" class="detail">
+                            URGENT
+                        </span>
+                    </span>
+                    <span v-if="editing === task.id">
+                        Urgent: <input type="checkbox" v-model="editTaskUrgent">
+                    </span>
+                    <span v-if="task.is_important">
+                        <span v-if="editing != task.id" class="detail">
+                            IMPORTANT
+                        </span>
+                    </span>
+                    <span v-if="editing === task.id">
+                        Important: <input type="checkbox" v-model="editTaskImportant">
+                    </span>
+                </div>
+                <div v-if="task.due_date">
+                    <span v-if="editing != task.id" class="detail">Due: [[ dueDate(task.due_date) ]]</span>
+                </div>
+                <div v-if="editing === task.id">
+                        <input type="date" v-model="editTaskDue" class="editfield">
+                </div>
+                <button v-if="editing === task.id" @click="editTask(task.id)" class="save">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </button>
+            </div>
+            <div v-for="task in completed" class="completed">
+                <i class="fa-solid fa-square-check" @click="$emit('update', task.id)"></i>
+                <span class="name">[[ task.name ]]</span>
+                <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', task.id)"></i>
+                <div>
+                    <span class="detail descrip">[[ task.description ]]</span>
                 </div>
             </div>
-            <div>
-                <span v-if="task.is_urgent">
-                    <span v-if="editing === null" class="detail">
-                        URGENT
-                    </span>
-                </span>
-                <span v-if="editing === task.id">
-                    Urgent: <input type="checkbox" v-model="editTaskUrgent">
-                </span>
-                <span v-if="task.is_important">
-                    <span v-if="editing === null" class="detail">
-                        IMPORTANT
-                    </span>
-                </span>
-                <span v-if="editing === task.id">
-                    Important: <input type="checkbox" v-model="editTaskImportant">
-                </span>
-            </div>
-            <div v-if="task.due_date">
-                <span v-if="editing === null" class="detail">Due: [[ dueDisplay ]]</span>
-                <span v-else-if="editing === task.id">
-                    <input type="date" v-model="editTaskDue" class="editfield">
-                </span>
-            </div> 
-            <button v-if="editing === task.id" @click="editTask" class="save">
-                <i class="fa-solid fa-floppy-disk"></i>
-            </button>
         </div>
         `,
     props: {
-        task: Object,
+        tasks: Array,
+        completed: Array,
     },
     delimiters: ['[[', ']]'],
     data: () => {
@@ -385,8 +414,8 @@ Vue.component('UserTasks', {
         }
     },
     methods: {
-        editTask() {
-            axios.patch(`api/tasks/${this.task.id}/`, {
+        editTask(taskID) {
+            axios.patch(`api/tasks/${taskID}/`, {
                 "name": this.editTaskName,
                 "description": this.editTaskDesc,
                 "due_date": this.editTaskDue,
@@ -397,29 +426,25 @@ Vue.component('UserTasks', {
 
             this.editing = null
         },
-        editToggle() {
-            if (this.editing === null) {
-                this.editing = this.task.id
+        editToggle(task) {
+            if (this.editing != task.id) {
+                this.editing = task.id
+                this.editTaskName = task.name
+                this.editTaskDesc = task.description
+                this.editTaskDue = this.dueDate(task.due_date)
+                this.editTaskUrgent = task.is_urgent
+                this.editTaskImportant = task.is_important
             } else { this.editing = null }
         },
-        dueDate() {
-            const newDate = new Date(this.task.due_date)
-            let jsonDate = newDate.toJSON()
-            let dateString = jsonDate.slice(0, 10)
-            this.dueDisplay = dateString
+        dueDate(datetime) {
+            if (datetime) {
+                const newDate = new Date(datetime)
+                let jsonDate = newDate.toJSON()
+                let dateString = jsonDate.slice(0, 10)
+                return dateString
+            } else {return null}
         },
     },
-    mounted() {
-        this.dueDate()
-        this.editTaskName = this.task.name
-        this.editTaskDesc = this.task.description
-        this.editTaskDue = this.dueDate()
-        this.editTaskUrgent = this.task.is_urgent
-        this.editTaskImportant = this.task.is_important
-    },
-    updated() {
-        this.dueDate()
-    }
 })
 
 Vue.component('UserHabits', {
@@ -493,7 +518,7 @@ Vue.component('DailyJournal', {
             
             <p v-if="editJournal === null" class="detail descrip">[[journal.entry]]</p>
             <p v-else-if="editJournal === journal.id">
-                <textarea v-model="editEntry" class="editfield" rows="10" cols="70"></textarea>
+                <textarea v-model="editEntry" class="editfield" rows="10" cols="30"></textarea>
             </p>
             <button v-if="editJournal === journal.id" @click="updateJournal" class="save">
                 <i class="fa-solid fa-floppy-disk"></i>
@@ -530,3 +555,75 @@ Vue.component('DailyJournal', {
     }
 })
 
+Vue.component('ColorThemes', {
+    template: `
+        <div>
+            <input type="radio" value="D"  id="dark" v-model="userTheme" @change="saveUserTheme">
+            <input type="radio" value="L" id="light" v-model="userTheme" @change="saveUserTheme">
+            <input type="radio" value="C" id="colorblind" v-model="userTheme" @change="saveUserTheme">
+        </div>`,
+    data: () => {
+        return {
+            userTheme: 'L',
+            authenticated: false
+        }
+    },
+    methods: {
+        userLoggedIn() {
+            axios.get('api/current/').then(response => {
+                if (response.data.username != '') {
+                    this.authenticated = true
+                    this.userTheme = response.data.color_theme
+                }
+            })
+        },
+        saveUserTheme() {
+            if (this.authenticated) {
+                axios.patch(`api/edit/${this.$parent.currentUser}/`, {
+                    "color_theme": `${this.userTheme}`
+                }, { headers: { 'X-CSRFToken': this.$parent.token } })
+            }
+        }
+    },
+    mounted() {
+        this.userLoggedIn()
+    }
+})
+
+Vue.component('Tutorial', {
+    template: `
+    <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+
+              <div class="modal-header">
+                <slot name="header">
+                  <h3>Welcome to Pyxis!</h3>
+                </slot>
+              </div>
+
+              <div class="modal-body">
+                <slot name="body">
+                  <p>make habits.</p>
+                  <p>make tasks?????</p>
+                  <p>make.......... JO UR NAL??????? </p>
+                  <p>F L A V O R text</p>
+                  <p>Click the arrows on the side of the week display to change the active week!
+                  Don't worry if you get too far back- refreshing the page brings you right back
+                  to today.</p>
+                </slot>
+              </div>
+
+              <div class="modal-footer">
+                <slot name="footer">
+                  <button @click="$emit('close')">
+                    Sounds Good!
+                  </button>
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>`,
+})
