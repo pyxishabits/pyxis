@@ -34,8 +34,9 @@ class HabitTaskView(generics.ListAPIView):
 
     # TODO: get by any given date, not just today
     def get_queryset(self):
+        date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
         habits = self.request.user.habit_set.all()
-        habit_tasks = HabitTask.objects.filter(date=timezone.now().date())
+        habit_tasks = HabitTask.objects.filter(date=date)
         return filter(lambda h: h.habit in habits, habit_tasks)
 
     # def get_queryset(self):
@@ -72,7 +73,15 @@ class TaskPerDay(generics.ListAPIView):
 
     def get_queryset(self):
         date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
-        return Task.objects.filter(user=self.request.user, date=date)
+        return Task.objects.filter(user=self.request.user, date__lte=date, completed_time=None)
+
+
+class CompletedTasks(generics.ListAPIView):
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
+        return Task.objects.filter(user=self.request.user, completed_time__contains=date)
 
 
 class CreateTask(generics.CreateAPIView):

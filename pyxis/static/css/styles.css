@@ -7,6 +7,8 @@
     --color-accent: #5bc0df;
     --subtle-accent: #212f33;
     --modal-cover: #080a18a9;
+    --bold-header: #0f0f0f;
+    --transparent-accent: #3d82979c;
 
     font-family: sans-serif;
     color: var(--text-color);
@@ -27,6 +29,8 @@
     --dark-accent: #5a687c;
     --color-accent: #1a6496;
     --subtle-accent: #7facca;
+    --bold-header: #fcfcfc;
+    --transparent-accent: #1a64969c;
 }
 
 :root:has(#colorblind:checked) {
@@ -37,6 +41,8 @@
     --dark-accent: #521919;
     --color-accent: #FFD967;
     --subtle-accent: #151F52;
+    --bold-header: #fcfcfc;
+    --transparent-accent: #1a64969c;
 }
 
 body {
@@ -54,6 +60,7 @@ h2 {
 }
 
 h3 {
+    padding: 0;
     margin: 0.7em 0 1em 0;
     color: var(--color-accent);
     font-family: 'Bebas Neue', cursive;
@@ -203,6 +210,7 @@ h3 {
     border-radius: 3px;
     padding: 0.5em;
     margin-left: 1.5em;
+    margin-bottom: 1em;
     width: fit-content;
 }
 
@@ -216,7 +224,7 @@ h3 {
 
 .add-entry {
     grid-area: add;
-    margin: 0 0.3em 1em 0.3em;
+    margin: 0.5em 0.3em 1em 0.3em;
     align-self: end;
     display: flex;
     justify-content: flex-end;
@@ -235,6 +243,42 @@ h3 {
 
 .add-button:active {
     background-color: var(--subtle-accent);
+}
+
+.habit-scheduler {
+    display: flex;
+    gap: 0.2em;
+}
+
+.weekday-select {
+    border: 1px solid var(--light-accent);
+    border-radius: 50%;
+    color: var(--main-color);
+    font-weight: 700;
+    background-color: var(--transparent-accent);
+
+    position: relative; 
+}
+
+.checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.habit-scheduler input {
+    margin: 0.3em;
+    opacity: 0;
+    cursor: pointer;
+    height: 1em;
+    padding: 0.2em;
+}
+
+.weekabbrv {
+    font-family: 'Azeret Mono', monospace;
+    pointer-events: none;
+    position: absolute;
+    left: 25%;
+    top: 5%;
 }
 
 .detail {
@@ -258,14 +302,26 @@ h3 {
     margin: 0 0 0.5em 1em;
 }
 
+.active {
+    margin-top: 0.5em;
+}
+
+.completed {
+    margin-top: 0.5em;
+    color: var(--dark-accent);
+}
+
 .inactiveTab {
     height: 3em;
     padding: 0;
 }
 
 .inactiveTab h3 {
-    padding: 0 0.5em 0 1em;
     margin: 0;
+}
+
+.inactiveTab .show-entry {
+    display: none;
 }
 
 .activeTab {
@@ -273,6 +329,10 @@ h3 {
     min-height: fit-content;
     overflow: hidden scroll;
     z-index: 3;
+}
+
+.activeTab .show-entry {
+    display: unset;
 }
 
 .preview {
@@ -283,6 +343,7 @@ h3 {
 }
 
 .preview > div {
+    height: 100%;
     width: 6em;
     text-align: center;
 }
@@ -348,4 +409,27 @@ h3 {
 
 .modal-body {
     margin: 20px 0;
+}
+
+@media screen and (min-width: 700px) {
+
+    .auth {
+        font-size: 10pt;
+    }
+
+    .add-window {
+        width: 400px;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .add-window {
+        margin: auto auto 2em auto;
+        width: 700px;
+    }
+
+    .main {
+        width: 95vw;
+    }
+
 }
