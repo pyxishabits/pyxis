@@ -123,8 +123,8 @@
                             <button @click="addHabit">Save</button>
                         </div>
 
-                        <user-habits v-for="h in habits" :habit="h" :key="h.id"
-                            @update="updateHabit" @delete="deleteHabit">
+                        <user-habits :habits="habits" :key="habits.id" @update="updateHabit"
+                            @delete="deleteHabit">
                         </user-habits>
 
                         <div v-for="habittaskinfo in todayHabitTaskData">
