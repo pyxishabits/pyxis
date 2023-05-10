@@ -9,7 +9,7 @@ class HabitSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'recurrence', 'user']
 
 
-class HabitTaskSerializer(serializers.ModelSerializer):
+class HabitTaskReadWriteSerializer(serializers.ModelSerializer):
     habit = HabitSerializer(read_only=True)
 
     class Meta:
@@ -17,11 +17,11 @@ class HabitTaskSerializer(serializers.ModelSerializer):
         fields = ['id', 'habit', 'date', 'completed_time']
 
 
-class HabitTaskWriteSerializer(serializers.ModelSerializer):
-    # TODO: combine this with above
-    class Meta:
-        model = HabitTask
-        fields = ['id', 'habit', 'date', 'completed_time']
+# class HabitTaskWriteSerializer(serializers.ModelSerializer):
+#     # TODO: combine this with above
+#     class Meta:
+#         model = HabitTask
+#         fields = ['id', 'habit', 'date', 'completed_time']
 
 
 class TaskSerializer(serializers.ModelSerializer):

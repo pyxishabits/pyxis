@@ -26,10 +26,8 @@ class CreateHabit(generics.CreateAPIView):
     queryset = Habit.objects.all()
 
 
-# return the days habits - will be similar to doneTask
-# returns users habits-related-task for one day
 class HabitTaskView(generics.ListAPIView):
-    serializer_class = HabitTaskSerializer
+    serializer_class = HabitTaskReadWriteSerializer
 
     # TODO: get by any given date, not just today
     def get_queryset(self):
@@ -37,19 +35,14 @@ class HabitTaskView(generics.ListAPIView):
         habit_tasks = HabitTask.objects.filter(date=timezone.now().date())
         return filter(lambda h: h.habit in habits, habit_tasks)
 
-    # def get_queryset(self):
-    #     return HabitTask.objects.filter(date=timezone.now().date(), user=self.request.user)
 
-
-# make a 'create' endpoint
 class CreateHabitTask(generics.CreateAPIView):
-    serializer_class = HabitTaskWriteSerializer
+    serializer_class = HabitTaskReadWriteSerializer
     queryset = HabitTask.objects.all()
 
 
-# custom update to toggle done/or not
 class DoneHabitTask(generics.UpdateAPIView):
-    serializer_class = HabitTaskSerializer
+    serializer_class = HabitTaskReadWriteSerializer
     queryset = HabitTask.objects.all()
 
     def perform_update(self, serializer):
