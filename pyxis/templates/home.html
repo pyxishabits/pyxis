@@ -123,6 +123,10 @@
                             <button @click="addHabit">Save</button>
                         </div>
 
+                        <user-habits v-for="h in habits" :habit="h" :key="h.id"
+                            @update="updateHabit" @delete="deleteHabit">
+                        </user-habits>
+
                         <div v-for="habittaskinfo in todayHabitTaskData">
                             <span @click="updateHabitTask(habittaskinfo)">
                                 <i v-if="habittaskinfo.habitTask && habittaskinfo.habitTask.completed_time"

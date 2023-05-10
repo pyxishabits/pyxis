@@ -101,14 +101,13 @@ new Vue({
                 ).then(() => this.getHabitTasks())
             }
         },
-        editHabit() {
-                axios.patch(`api/habittask/${habitID}/`, {},
+        updateHabit() {
+            axios.patch(`api/habittask/${habit.id}/`, {},
                 { headers: { 'X-CSRFToken': this.token } }
             ).then(() => this.getHabits())
-        
         },
         deleteHabit() {
-            axios.delete(`api/habittask/${habitID}/`, {},
+            axios.delete(`api/habittask/${habit.id}/`, {},
                 { headers: { 'X-CSRFToken': this.token } }
             ).then(() => this.getHabits())
         },
@@ -400,8 +399,8 @@ Vue.component('UserTasks', {
         },
         editToggle() {
             if (this.editing === null) {
-                return this.editing = this.task.id
-            } else { return this.editing = null }
+                this.editing = this.task.id
+            } else { this.editing = null }
         },
         dueDate() {
             const newDate = new Date(this.task.due_date)
@@ -423,7 +422,7 @@ Vue.component('UserTasks', {
     }
 })
 
-Vue.component('HabitTask', {
+Vue.component('UserHabits', {
     template:` 
     <div>
     <span v-if="!habit.completed_time" @click="$emit('update', habit.id)">
@@ -451,7 +450,7 @@ Vue.component('HabitTask', {
     `,
 
     props: {
-        habit: Object,
+        habit: Object
     },
     delimiters: ['[[', ']]'],
     data: () => {
@@ -459,35 +458,31 @@ Vue.component('HabitTask', {
             editing: null,
             editHabitName:'',
             editHabitDesc:'',
-
         }
     },
     methods: {
         editHabit() {
-            axios.patch(`api/habittask/${habit.id}/`, {
+            axios.patch(`api/habits/${this.habit.id}/`, {
                 "name": this.editHabitName,
                 "description": this.editHabitDesc,
             }, { headers: { 'X-CSRFToken': this.$parent.token } }
-            ).then(() => { this.$parent.getHabitTasks() })
+            ).then(() => { this.$parent.getHabits() })
 
             this.editing = null
           
         },
         editToggle() {
             if (this.editing === null) {
-                return this.editing = this.habit.id
-            } else { return this.editing = null }
+                this.editing = this.habit.id
+            } else {this.editing = null }
         },
-        createHabit() {
-            
-        },
+
     },
     mounted() {
         this.editHabitName = this.habit.name
         this.editHabitDesc = this.habit.description
     }
 })
-
 
 
 Vue.component('DailyJournal', {
