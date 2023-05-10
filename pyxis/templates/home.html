@@ -21,23 +21,19 @@
 
 <body>
     {% load tz_detect %}
-<<<<<<< HEAD
     <div class="sr-hidden">
-    {% now "jS F Y H:i" %}
+        {% now "jS F Y H:i" %}
     </div>
-=======
-    <!-- It is {% now "jS F Y H:i" %} -->
->>>>>>> bc6ab5a847f7979c5577fb7e0fdc754172426d9f
     {% tz_detect %}
     <div id="app">
         {% csrf_token %}
         <header id="header">
             <div id="user-info">
                 <form class="theme-picker">
-                    
+
                     <fieldset>
                         <legend class="sr-hidden">Themes</legend>
-                        <color-themes/>
+                        <color-themes />
                     </fieldset>
                 </form>
                 {% block authcontent %}
@@ -117,8 +113,8 @@
                             <div class="input">
                                 <label for="recurrence">Schedule: </label>
                                 <div class="habit-scheduler">
-                                    <label v-for="(day, index) in daysOfTheWeek" for="day.name" class="weekday-select" 
-                                    :class="{'checked':newRecurrence[index]}">
+                                    <label v-for="(day, index) in daysOfTheWeek" for="day.name" class="weekday-select"
+                                        :class="{'checked':newRecurrence[index]}">
                                         <input type="checkbox" name="day.name" v-model="newRecurrence[index]">
                                         <span class="weekabbrv">[[day.abbrv]]</span>
                                     </label>
@@ -200,8 +196,8 @@
                             </div>
                             <button @click="addTask">Save</button>
                         </div>
-                        <user-tasks :tasks="tasks" :key="tasks.id" :completed="completedTasks"
-                            @update="updateTask" @delete="deleteTask">
+                        <user-tasks :tasks="tasks" :key="tasks.id" :completed="completedTasks" @update="updateTask"
+                            @delete="deleteTask">
                         </user-tasks>
                     </div>
                 </div>
