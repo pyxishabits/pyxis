@@ -102,7 +102,15 @@ new Vue({
             }
         },
         editHabit() {
-
+                axios.patch(`habittask/${habitID}/`, {},
+                { headers: { 'X-CSRFToken': this.token } }
+            ).then(() => this.getHabits())
+        
+        },
+        deleteHabit() {
+            axios.delete(`habittask/${habitID}/`, {},
+                { headers: { 'X-CSRFToken': this.token } }
+            ).then(() => this.getHabits())
         },
         addHabit() {
             let sched = this.newRecurrence.reduce((day, bool, index) => bool ? day.concat(index, ',') : day, '')
