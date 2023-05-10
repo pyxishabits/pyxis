@@ -29,6 +29,16 @@
     --subtle-accent: #7facca;
 }
 
+:root:has(#colorblind:checked) {
+    --main-color: #5B6686;
+    --main-transparent: #5B6686de;
+    --text-color: #FFD967;
+    --light-accent: #C6DCF5;
+    --dark-accent: #521919;
+    --color-accent: #FFD967;
+    --subtle-accent: #151F52;
+}
+
 body {
     margin: 0;
 }
@@ -338,18 +348,4 @@ h3 {
 
 .modal-body {
     margin: 20px 0;
-}
-
-.modal-enter {
-    opacity: 0;
-}
-
-.modal-leave-active {
-    opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
 }

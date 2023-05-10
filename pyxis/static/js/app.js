@@ -473,6 +473,7 @@ Vue.component('ColorThemes', {
         <div>
             <input type="radio" value="D"  id="dark" v-model="userTheme" @change="saveUserTheme">
             <input type="radio" value="L" id="light" v-model="userTheme" @change="saveUserTheme">
+            <input type="radio" value="C" id="colorblind" v-model="userTheme" @change="saveUserTheme">
         </div>`,
     data: () => {
         return {
