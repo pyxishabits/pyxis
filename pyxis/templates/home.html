@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono&family=Bebas+Neue&display=swap');
     </style>
     <script src="https://kit.fontawesome.com/03c91ce9d4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -110,14 +110,12 @@
                             </div>
                             <div class="input">
                                 <label for="recurrence">Schedule: </label>
-                                <div>
-                                    <input type="checkbox" name="sunday" v-model="newRecurrence[0]">
-                                    <input type="checkbox" name="monday" v-model="newRecurrence[1]">
-                                    <input type="checkbox" name="tuesday" v-model="newRecurrence[2]">
-                                    <input type="checkbox" name="wednesday" v-model="newRecurrence[3]">
-                                    <input type="checkbox" name="thursday" v-model="newRecurrence[4]">
-                                    <input type="checkbox" name="friday" v-model="newRecurrence[5]">
-                                    <input type="checkbox" name="saturday" v-model="newRecurrence[6]">
+                                <div class="habit-scheduler">
+                                    <label v-for="(day, index) in daysOfTheWeek" for="day.name" class="weekday-select" 
+                                    :class="{'checked':newRecurrence[index]}">
+                                        <input type="checkbox" name="day.name" v-model="newRecurrence[index]">
+                                        <span class="weekabbrv">[[day.abbrv]]</span>
+                                    </label>
                                 </div>
                             </div>
                             <button @click="addHabit">Save</button>
