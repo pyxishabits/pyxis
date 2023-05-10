@@ -102,13 +102,13 @@ new Vue({
             }
         },
         editHabit() {
-                axios.patch(`habittask/${habitID}/`, {},
+                axios.patch(`api/habittask/${habitID}/`, {},
                 { headers: { 'X-CSRFToken': this.token } }
             ).then(() => this.getHabits())
         
         },
         deleteHabit() {
-            axios.delete(`habittask/${habitID}/`, {},
+            axios.delete(`api/habittask/${habitID}/`, {},
                 { headers: { 'X-CSRFToken': this.token } }
             ).then(() => this.getHabits())
         },
@@ -423,6 +423,73 @@ Vue.component('UserTasks', {
     }
 })
 
+Vue.component('HabitTask', {
+    template:` 
+    <div>
+    <span v-if="!habit.completed_time" @click="$emit('update', habit.id)">
+        <i class="fa-regular fa-square"></i>
+    </span>
+    <span v-else-if="habit.completed_time" @click="$emit('update', habit.id)">
+        <i class="fa-solid fa-square-check"></i>
+    </span>
+    <span v-if="editing === null" class="name">[[ habit.name ]]</span>
+    <span v-else-if="editing === habit.id">
+        <input type="text" v-model="editHabitName" class="editfield">
+    </span>
+    <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle"></i>
+    <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', habit.id)"></i>
+        <div>
+            <span v-if="editing === null" class="detail descrip">[[ habit.description ]]</span>
+            <div v-else-if="editing === habit.id">
+            <textarea v-model="editHabitDesc" class="editfield"></textarea>
+            </div>
+        </div>
+        <button v-if="editing === habit.id" @click="editHabit" class="save">
+            <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+    </div>
+    `,
+
+    props: {
+        habit: Object,
+    },
+    delimiters: ['[[', ']]'],
+    data: () => {
+        return {
+            editing: null,
+            editHabitName:'',
+            editHabitDesc:'',
+
+        }
+    },
+    methods: {
+        editHabit() {
+            axios.patch(`api/habittask/${habit.id}/`, {
+                "name": this.editHabitName,
+                "description": this.editHabitDesc,
+            }, { headers: { 'X-CSRFToken': this.$parent.token } }
+            ).then(() => { this.$parent.getHabitTasks() })
+
+            this.editing = null
+          
+        },
+        editToggle() {
+            if (this.editing === null) {
+                return this.editing = this.habit.id
+            } else { return this.editing = null }
+        },
+        createHabit() {
+            
+        },
+    },
+    mounted() {
+        this.editHabitName = this.habit.name
+        this.editHabitDesc = this.habit.description
+    }
+})
+
+
+
 Vue.component('DailyJournal', {
     template: ` 
         <div>
@@ -467,3 +534,4 @@ Vue.component('DailyJournal', {
         this.editEntry = this.journal.entry
     }
 })
+
