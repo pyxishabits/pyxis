@@ -344,3 +344,26 @@ h3 {
     white-space: nowrap;
     width: 1px;
 }
+
+@media screen and (min-width: 700px) {
+
+    .auth {
+        font-size: 10pt;
+    }
+
+    .add-window {
+        width: 400px;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .add-window {
+        margin: auto auto 2em auto;
+        width: 700px;
+    }
+
+    .main {
+        width: 95vw;
+    }
+
+}

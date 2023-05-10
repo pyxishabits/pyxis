@@ -423,7 +423,7 @@ Vue.component('DailyJournal', {
             
             <p v-if="editJournal === null" class="detail descrip">[[journal.entry]]</p>
             <p v-else-if="editJournal === journal.id">
-                <textarea v-model="editEntry" class="editfield" rows="10" cols="70"></textarea>
+                <textarea v-model="editEntry" class="editfield" rows="10" cols="30"></textarea>
             </p>
             <button v-if="editJournal === journal.id" @click="updateJournal" class="save">
                 <i class="fa-solid fa-floppy-disk"></i>
