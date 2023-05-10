@@ -17,13 +17,6 @@ class HabitTaskReadWriteSerializer(serializers.ModelSerializer):
         fields = ['id', 'habit', 'date', 'completed_time']
 
 
-# class HabitTaskWriteSerializer(serializers.ModelSerializer):
-#     # TODO: combine this with above
-#     class Meta:
-#         model = HabitTask
-#         fields = ['id', 'habit', 'date', 'completed_time']
-
-
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
