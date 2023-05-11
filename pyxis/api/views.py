@@ -13,6 +13,13 @@ class HabitView(generics.ListAPIView):
 
     def get_queryset(self):
         return Habit.objects.filter(user=self.request.user)
+    
+class CompletedHabitTask(generics.ListAPIView):
+    serializer_class = HabitTaskSerializer
+
+    def get_queryset(self):
+        date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
+        return HabitTask.objects.filter(completed_time__contains=date)
 
 
 class HabitDetail(generics.RetrieveUpdateDestroyAPIView):
