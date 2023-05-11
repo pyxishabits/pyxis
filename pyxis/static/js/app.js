@@ -7,9 +7,10 @@ new Vue({
         currentUser: '',
         habits: [],
         habitsPrev: [],
-        tasks: {},
+        tasks: [],
         tasksPrev: [],
-        completedTasks: {},
+        completedTasks: [],
+        completedHabits: [],
         journalEntry: {},
         journalPrev: '',
         daysOfTheWeek: {
@@ -62,7 +63,9 @@ new Vue({
                     this.previewHabit()
                 })
             }
+        
         },
+     
         previewHabit() {
             this.habitsPrev = []
             if (this.habits.length > 0) {
@@ -91,10 +94,20 @@ new Vue({
                         }
                     })
                 })
+                    axios.get('api/habits/donetoday/', {
+                        params: { date: this.activeDate }
+                    })
+                        .then(response => {
+                            this.completedHabits = response.data.reverse()
+                        })
         },
         updateHabitTask(habitTaskData) {
             if (habitTaskData.habitTask) {
                 axios.patch(`api/habittask/${habitTaskData.habitTask.id}/done/`, {},
+                    { headers: { 'X-CSRFToken': this.token } }
+                ).then(() => this.getHabitTasks())
+            } else if (habitTaskData.completed_time) {
+                axios.patch(`api/habittask/${habitTaskData.id}/done/`, {},
                     { headers: { 'X-CSRFToken': this.token } }
                 ).then(() => this.getHabitTasks())
             } else {
@@ -106,8 +119,15 @@ new Vue({
                 ).then(() => this.getHabitTasks())
             }
         },
-        editHabit() {
-
+        updateHabit(habitID) {
+            axios.patch(`api/habittask/${habitID}/`, {},
+                { headers: { 'X-CSRFToken': this.token } }
+            ).then(() => this.getHabits())
+        },
+        deleteHabit(habitID) {
+            axios.delete(`api/habits/${habitID}/`,
+                { headers: { 'X-CSRFToken': this.token } }
+            ).then(() => this.getHabits())
         },
         addHabit() {
             let sched = this.newRecurrence.reduce((day, bool, index) => bool ? day.concat(index, ',') : day, '')
@@ -439,6 +459,79 @@ Vue.component('UserTasks', {
         },
     },
 })
+
+Vue.component('UserHabits', {
+    template:` 
+    <div>
+        <div v-for="habit in habits" v-if="!habit.habitTask || !habit.habitTask.completed_time" class="active">
+        
+            <i class="fa-regular fa-square" @click="$emit('update', habit)"></i>
+            <span v-if="editing != habit.habit.id" class="name">[[ habit.habit.name ]]</span>
+            <span v-else-if="editing === habit.habit.id">
+                <input type="text" v-model="editHabitName" class="editfield">
+            </span>
+            <i class="fa-solid fa-pen-to-square" title="Edit" @click="editToggle(habit.habit)"></i>
+            <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', habit.habit.id)"></i>
+            <div>
+                <span v-if="editing != habit.habit.id" class="detail descrip">[[ habit.habit.description ]]</span>
+                <div v-else-if="editing === habit.habit.id">
+                <textarea v-model="editHabitDesc" class="editfield"></textarea>
+                </div>
+            </div>
+            <button v-if="editing === habit.habit.id" @click="editHabit(habit.habit.id)" class="save">
+                <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        </div>
+        <div v-for="habit in completed" class="completed">
+        <i class="fa-solid fa-square-check" @click="$emit('update', habit)"></i>
+        <span class="name">[[ habit.habit.name ]]</span>
+        <i class="fa-regular fa-trash-can" title="Delete" @click="$emit('delete', habit.habit.id)"></i>
+        <div>
+            <span class="detail descrip">[[ habit.habit.description ]]</span>
+        </div>
+    </div>
+    </div>
+    `,
+
+    props: {
+        habits: Array,
+        completed: Array,
+    },
+    delimiters: ['[[', ']]'],
+    data: () => {
+        return {
+            editing: null,
+            editHabitName:'',
+            editHabitDesc:'',
+        }
+    },
+
+    methods: {
+        editHabit(habitID) {
+            axios.patch(`api/habits/${habitID}/`, {
+                "name": this.editHabitName,
+                "description": this.editHabitDesc,
+            }, { headers: { 'X-CSRFToken': this.$parent.token } }
+            ).then(() => { this.$parent.getHabits() })
+
+            this.editing = null
+          
+        },
+        editToggle(habit) {
+            if (this.editing != habit.id) {
+                this.editing = habit.id
+                this.editHabitName = habit.name
+                this.editHabitDesc = habit.description
+            } else {this.editing = null }
+        },
+
+    },
+    // mounted() {
+    //     this.editHabitName = this.habit.name
+    //     this.editHabitDesc = this.habit.description
+    // }
+})
+
 
 Vue.component('DailyJournal', {
     template: ` 
