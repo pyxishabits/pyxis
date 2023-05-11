@@ -123,18 +123,18 @@
                             <button @click="addHabit">Save</button>
                         </div>
 
-                        <user-habits :habits="habits" :key="habits.id" @update="updateHabit"
-                            @delete="deleteHabit">
+                        <user-habits :habits="todayHabitTaskData" @update="updateHabitTask"
+                            @delete="deleteHabit"  :completed="completedHabits">
                         </user-habits>
 
-                        <div v-for="habittaskinfo in todayHabitTaskData">
+                        <!-- <div v-for="habittaskinfo in todayHabitTaskData">
                             <span @click="updateHabitTask(habittaskinfo)">
                                 <i v-if="habittaskinfo.habitTask && habittaskinfo.habitTask.completed_time"
                                     class="fa-solid fa-square-check"></i>
                                 <i v-else class="fa-regular fa-square"></i>
                             </span>
                             <span>[[ habittaskinfo.name ]]</span>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>
