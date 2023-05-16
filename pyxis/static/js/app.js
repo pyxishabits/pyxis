@@ -3,6 +3,7 @@ new Vue({
     delimiters: ['[[', ']]'],
     data: {
         token: '',
+        viewMenu: false,
         showTutorial: true,
         currentUser: '',
         habits: [],
@@ -55,15 +56,12 @@ new Vue({
         getHabits() {
             const activeIndex = new Date(this.activeDateTime).getDay()
 
-            if (this.currentUser) {
-                axios.get('api/habits/')
-                .then(response => {
-                    this.habits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
-                    this.getHabitTasks()
-                    this.previewHabit()
-                })
-            }
-        
+            axios.get('api/habits/')
+            .then(response => {
+                this.habits = response.data.filter(h => h.recurrence.includes(activeIndex)).reverse()
+                this.getHabitTasks()
+                this.previewHabit()
+            })
         },
      
         previewHabit() {
@@ -158,15 +156,13 @@ new Vue({
             }
         },
         getTasks() {
-            if (this.currentUser) {
-                axios.get('api/tasks/', {
-                    params: { date: this.activeDate }
+            axios.get('api/tasks/', {
+                params: { date: this.activeDate }
+            })
+                .then(response => {
+                    this.tasks = response.data.reverse()
+                    this.tasksPreview()
                 })
-                    .then(response => {
-                        this.tasks = response.data.reverse()
-                        this.tasksPreview()
-                    })
-            }
 
             axios.get('api/tasks/donetoday/', {
                 params: { date: this.activeDate }
@@ -343,15 +339,16 @@ new Vue({
             }
         },
     },
-    mounted() {
-        this.activeDate = this.newDate()
+    beforeMount() {
         this.getUser()
-        this.getJournal()
-        this.getTasks()
-        this.getWeek()
-        this.getHabits()
-        this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
     },
+    mounted() {
+        // this.getUser()
+        this.token = document.querySelector('input[name=csrfmiddlewaretoken]').value
+        this.activeDate = this.newDate()
+        this.getWeek()
+        this.viewForDay(this.today)
+    }
 })
 
 

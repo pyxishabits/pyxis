@@ -29,29 +29,38 @@
         {% csrf_token %}
         <header id="header">
             <div id="user-info">
-                <form class="theme-picker">
 
-                    <fieldset>
-                        <legend class="sr-hidden">Themes</legend>
-                        <color-themes />
-                    </fieldset>
-                </form>
+                <div class="menu">
+                    
+                    <div class="base-menu">
+
+                        <span>MENU</span>
+                        <i class="fa-solid fa-bars menu-button" @click="viewMenu = !viewMenu"></i>
+                    </div>
+                    <div class="nav" :class="{'fullmenu':viewMenu}">
+                        <fieldset>
+                            <legend class="sr-hidden">Themes</legend>
+                            <color-themes v-show="viewMenu"/>
+                        </fieldset>
+                        {% if user.is_authenticated %}
+                        <nav v-if="viewMenu"><a href="{% url 'logout' %}">LOGOUT</a></nav>
+                        {% else %}
+                        <nav v-if="viewMenu"><a href="{% url 'login' %}">LOGIN</a></nav>
+                        {% endif %}
+                        <nav v-if="viewMenu"><a href="{% url 'about' %}">ABOUT</a></nav>
+                    </div>
+                </div>
+                <a href="{% url 'home' %}"><img src="{% static 'media/logo.svg' %}" class="logo"></a>
                 {% block authcontent %}
                 {% if user.is_authenticated %}
-                <div class="greeting">
+                <div class="auth">
                     <h2>{{ user.username }}</h2>
                 </div>
-                <div class="auth">
-                    <a href="{% url 'logout' %}">LOGOUT</a>
-                </div>
                 {% else %}
-                <div class="greeting">
-                    <h2>Pyxis</h2>
-                </div>
-                <div class="auth">
+                <nav class="auth">
                     <a href="{% url 'login' %}">Login</a> or
                     <a href="{% url 'accounts:signup' %}">Sign Up</a>
-                </div>
+                </nav>
                 {% endif %}
                 {% endblock %}
             </div>
