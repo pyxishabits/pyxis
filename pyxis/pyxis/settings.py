@@ -44,9 +44,16 @@ INSTALLED_APPS = [
     'tasks.apps.TasksConfig',
     'api.apps.ApiConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'tz_detect',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -63,7 +70,8 @@ MIDDLEWARE = [
 ]   
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000'
+    'http://localhost:8000',
+    'http://localhost:3000'
 ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
