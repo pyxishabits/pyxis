@@ -1,21 +1,26 @@
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from tasks.models import *
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from .serializers import *
 from datetime import datetime
-
+from rest_framework import authentication, permissions
 
 class HabitView(generics.ListAPIView):
     serializer_class = HabitSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Habit.objects.filter(user=self.request.user)
     
+
 class CompletedHabitTask(generics.ListAPIView):
     serializer_class = HabitTaskSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
@@ -24,6 +29,8 @@ class CompletedHabitTask(generics.ListAPIView):
 
 class HabitDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HabitSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Habit.objects.filter(user=self.request.user)
@@ -32,13 +39,16 @@ class HabitDetail(generics.RetrieveUpdateDestroyAPIView):
 class CreateHabit(generics.CreateAPIView):
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # return the days habits - will be similar to doneTask
 # returns users habits-related-task for one day
 class HabitTaskView(generics.ListAPIView):
     serializer_class = HabitTaskSerializer
-
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     # TODO: get by any given date, not just today
     def get_queryset(self):
         date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
@@ -54,12 +64,16 @@ class HabitTaskView(generics.ListAPIView):
 class CreateHabitTask(generics.CreateAPIView):
     serializer_class = HabitTaskWriteSerializer
     queryset = HabitTask.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # custom update to toggle done/or not
 class DoneHabitTask(generics.UpdateAPIView):
     serializer_class = HabitTaskSerializer
     queryset = HabitTask.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_update(self, serializer):
         habit = HabitTask.objects.get(pk=self.kwargs['pk'])
@@ -73,10 +87,14 @@ class DoneHabitTask(generics.UpdateAPIView):
 class TaskView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class TaskPerDay(generics.ListAPIView):
     serializer_class = TaskSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
@@ -85,6 +103,8 @@ class TaskPerDay(generics.ListAPIView):
 
 class CompletedTasks(generics.ListAPIView):
     serializer_class = TaskSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         date = datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d').date()
@@ -94,11 +114,15 @@ class CompletedTasks(generics.ListAPIView):
 class CreateTask(generics.CreateAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class DoneTask(generics.UpdateAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_update(self, serializer):
         task = Task.objects.get(pk=self.kwargs['pk'])
@@ -109,6 +133,8 @@ class DoneTask(generics.UpdateAPIView):
             serializer.save(completed_time=None)
 
 
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 @api_view(['GET'])
 def get_journal(request):
     date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
@@ -121,14 +147,22 @@ def get_journal(request):
 class JournalEdit(generics.UpdateAPIView):
     serializer_class = JournalSerializer
     queryset = Journal.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
 
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 @api_view(['GET'])
 def current_user(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
+
 class ThemeEdit(generics.UpdateAPIView):
     serializer_class = UserSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_queryset(self):
         return get_user_model()
