@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import dotenv_values
+# from dotenv import dotenv_values
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load_dotenv(os.path.join(BASE_DIR, ".env"), encoding='utf-8')
 # SECRET_KEY = os.environ['DJANGOKEY']
-SECRET_KEY = dotenv_values('.env')
+# SECRET_KEY = dotenv_values('.env')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pyxishabits.pythonanywhere.com']
 
 
 # Application definition
@@ -64,8 +66,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'tz_detect.middleware.TimezoneMiddleware',
     'pyxis.middleware.UserTimezoneMiddleware',
-    
-]   
+
+]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
