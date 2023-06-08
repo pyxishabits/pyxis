@@ -14,7 +14,7 @@ class HabitView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Habit.objects.filter(user=self.request.user)
+        return Habit.objects.all()
     
 
 class CompletedHabitTask(generics.ListAPIView):
