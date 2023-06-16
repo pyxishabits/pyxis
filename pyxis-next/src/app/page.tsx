@@ -1,4 +1,12 @@
 // import Image from 'next/image'
+import { useState } from "react"
+
+function DaysOfTheWeek() {
+  const daysOfWeek = {
+
+  }
+  return <></>
+}
 
 export default function Home() {
   return (
