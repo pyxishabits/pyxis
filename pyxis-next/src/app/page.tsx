@@ -1,95 +1,68 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+// import Image from 'next/image'
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+    {/* TODO: all new timezone trouble */}
+      <header id="header">
+        <div id="user-info">
+          <div className="menu">
+            <div className="base-menu">
+                <span>MENU</span>
+                <i className="fa-solid fa-bars menu-button"></i>
+                {/* @click="viewMenu = !viewMenu" */}
+            </div>
+            <div className="nav">  {/* :className="{'fullmenu':viewMenu}" */}
+                <fieldset>
+                    <legend className="sr-hidden">Themes</legend>
+                    {/* <color-themes v-show="viewMenu"/> */}
+                </fieldset>
+                {/* {% if user.is_authenticated %} */}
+                {/* <nav v-if="viewMenu"><a href="#">LOGOUT</a></nav>
+                {% else %} */}
+                <nav><a href="#">LOGIN</a></nav>
+                {/* {% endif %} */}
+                <nav v-if="viewMenu"><a href="#">ABOUT</a></nav>
+            </div>
+          </div>
+            <a href="/"><h2>PYXIS</h2></a>
+            {/* <img src="{% static 'media/logo.svg' %}" className="logo"></img> */}
+            <div className="auth">
+                <h2>USERNAME</h2>
+            </div>
+            <nav className="auth">
+                <a href="#">Login</a> or
+                <a href="#">Sign Up</a>
+            </nav>
         </div>
-      </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+              <div id="weekdates">
+                  [[ weekStart ]] to [[ weekEnd ]]
+              </div>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+              <nav id="weekly-view">
+                  <div className="prev-week">
+                  {/* @click="weekPrev" */}
+                      <i className="fa-solid fa-angles-left"></i>
+                  </div>
+                  {/* <div v-for="day in daysOfTheWeek" :id="day.name" className="weekday" :className="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
+                          {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="viewForDay(day.name)">
+                      [[ day.abbrv ]]
+                  </div> */}
+                  <div className="weekday">S</div>
+                  <div className="weekday">M</div>
+                  <div className="weekday">T</div>
+                  <div className="weekday">W</div>
+                  <div className="weekday">T</div>
+                  <div className="weekday">F</div>
+                  <div className="weekday">S</div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+                  <div className="next-week">
+                  {/* @click="weekNext" */}
+                      <i className="fa-solid fa-angles-right"></i>
+                  </div>
+              </nav>
+          </header>
+    </>
   )
 }
