@@ -15,11 +15,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="{% static 'js/app.js' %}" defer></script>
+    <script src="{% static 'js/app2.js' %}" defer></script>
 
     <title>{% block title %}Pyxis Home{% endblock %}</title>
 </head>
 
 <body>
+    <div id="react-root"></div>
     {% load tz_detect %}
     <div class="sr-hidden">
         {% now "jS F Y H:i" %}

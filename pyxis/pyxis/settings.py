@@ -17,6 +17,8 @@ import django
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+BACKEND_DIR = BASE_DIR  # rename variable for clarity
+FRONTEND_DIR = BASE_DIR.parent / 'pyxisfront'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -27,8 +29,9 @@ SECRET_KEY = dotenv_values('.env')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = os.environ.get('DJANGO_ENV') == 'development'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'tasks.apps.TasksConfig',
     'api.apps.ApiConfig',
@@ -51,6 +55,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,7 +80,8 @@ ROOT_URLCONF = 'pyxis.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        # 'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [FRONTEND_DIR / 'build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,7 +144,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [FRONTEND_DIR / 'build' / 'static']
+
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage')
+
+STATIC_ROOT = BACKEND_DIR / 'static'
+
+WHITENOISE_ROOT = FRONTEND_DIR / 'build' / 'root'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
