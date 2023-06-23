@@ -1,14 +1,15 @@
 // import Image from 'next/image'
 import { useState } from "react"
+import TestComponent from "./components/TestComponent"
 
 function DaysOfTheWeek() {
-  const daysOfWeek = {
-
-  }
   return <></>
 }
 
 export default function Home() {
+  // TODO: Add universal data here
+  const daysOfWeek = {
+  }
   return (
     <>
     {/* TODO: all new timezone trouble */}
@@ -71,6 +72,7 @@ export default function Home() {
                   </div>
               </nav>
           </header>
+          <TestComponent/>
     </>
   )
 }
