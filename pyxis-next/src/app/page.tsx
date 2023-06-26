@@ -1,18 +1,24 @@
 // import Image from 'next/image'
 import { useState } from "react"
 import TestComponent from "./components/TestComponent"
-
-function DaysOfTheWeek() {
-  return <></>
-}
+import WeekDisplay from  "./components/WeekDisplay"
 
 export default function Home() {
   // TODO: Add universal data here
   const daysOfWeek = {
+    0: { name: 'sunday', abbrv: 'S' },
+    1: { name: 'monday', abbrv: 'M' },
+    2: { name: 'tuesday', abbrv: 'T' },
+    3: { name: 'wednesday', abbrv: 'W' },
+    4: { name: 'thursday', abbrv: 'T' },
+    5: { name: 'friday', abbrv: 'F' },
+    6: { name: 'saturday', abbrv: 'S' },
   }
+  // const weekdayNames: Array<string> = ['Sunday','Monday','Tuesday','Wednesday',
+  //   'Thursday','Friday','Saturday']
+
   return (
     <>
-    {/* TODO: all new timezone trouble */}
       <header id="header">
         <div id="user-info">
           <div className="menu">
@@ -45,32 +51,7 @@ export default function Home() {
             </nav>
         </div>
 
-              <div id="weekdates">
-                  [[ weekStart ]] to [[ weekEnd ]]
-              </div>
-
-              <nav id="weekly-view">
-                  <div className="prev-week">
-                  {/* @click="weekPrev" */}
-                      <i className="fa-solid fa-angles-left"></i>
-                  </div>
-                  {/* <div v-for="day in daysOfTheWeek" :id="day.name" className="weekday" :className="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
-                          {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="viewForDay(day.name)">
-                      [[ day.abbrv ]]
-                  </div> */}
-                  <div className="weekday">S</div>
-                  <div className="weekday">M</div>
-                  <div className="weekday">T</div>
-                  <div className="weekday">W</div>
-                  <div className="weekday">T</div>
-                  <div className="weekday">F</div>
-                  <div className="weekday">S</div>
-
-                  <div className="next-week">
-                  {/* @click="weekNext" */}
-                      <i className="fa-solid fa-angles-right"></i>
-                  </div>
-              </nav>
+          <WeekDisplay/>
           </header>
           <TestComponent/>
     </>

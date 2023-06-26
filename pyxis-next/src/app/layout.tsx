@@ -12,7 +12,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <script src="https://kit.fontawesome.com/03c91ce9d4.js" crossOrigin="anonymous"></script>
+      <head>
+      <script src="https://kit.fontawesome.com/03c91ce9d4.js" crossOrigin="anonymous" async></script>
+      </head>
       <body>{children}</body>
     </html>
   )
