@@ -1,4 +1,6 @@
-// import Image from 'next/image'
+import Image from 'next/image';
+import pyxisLogo from "/public/images/pyxis-logo.svg";
+
 import { useState } from "react"
 
 function DaysOfTheWeek() {
@@ -33,7 +35,8 @@ export default function Home() {
                 <nav v-if="viewMenu"><a href="#">ABOUT</a></nav>
             </div>
           </div>
-            <a href="/"><h2>PYXIS</h2></a>
+            {/* <a href="/"><h2>PYXIS</h2></a> */}
+            <Image className="logo" priority src={pyxisLogo} alt="pyxis"/>
             {/* <img src="{% static 'media/logo.svg' %}" className="logo"></img> */}
             <div className="auth">
                 <h2>USERNAME</h2>
