@@ -4,22 +4,23 @@ async function WeekDisplay() {
     // let weekdays: Array<string> = Array.from(weekdayNames);
     // console.log(weekdays)
 
-    let weekStart: string = 'Saturday'
-    let weekEnd: string = 'Sunday'
-
     const weekdayNames: Array<string> = ['Sunday','Monday','Tuesday','Wednesday',
     'Thursday','Friday','Saturday']
 
-    function findDates() {
-        let weekStart = "the start"
-        let weekEnd = "the end :)"
-        return weekStart
-    }
+    function findThisWeek() {
+        let curr = new Date
+        let first = curr.getDate() - curr.getDay()
 
+        let firstday = new Date(curr.setDate(first)).toDateString()
+        let lastday = new Date(curr.setDate((curr.getDate() - curr.getDay()) + 6)).toDateString()
+
+        return [firstday, lastday]
+    }
+    
     return (
     <>
         <div id="weekdates">
-            {weekStart} to [[ weekEnd ]]
+            {findThisWeek()[0]} to {findThisWeek()[1]}
         </div>
 
         <nav id="weekly-view">
