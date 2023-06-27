@@ -37,9 +37,9 @@ export default function Home() {
                 {/* {% if user.is_authenticated %} */}
                 {/* <nav v-if="viewMenu"><a href="#">LOGOUT</a></nav>
                 {% else %} */}
-                <nav><a href="#">LOGIN</a></nav>
+                <nav><a href="/registration/login">LOGIN</a></nav>
                 {/* {% endif %} */}
-                <nav v-if="viewMenu"><a href="#">ABOUT</a></nav>
+                <nav v-if="viewMenu"><a href="/about">ABOUT</a></nav>
             </div>
           </div>
             <a href="/">
@@ -49,8 +49,8 @@ export default function Home() {
                 <h2>USERNAME</h2>
             </div>
             <nav className="auth">
-                <a href="#">Login</a> or
-                <a href="#">Sign Up</a>
+                <a href="/registration/login">Login</a> or
+                <a href="/registration/signup">Sign Up</a>
             </nav>
         </div>
 
