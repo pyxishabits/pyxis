@@ -36,7 +36,6 @@ export default function Home() {
                 <nav v-if="viewMenu"><a href="/about">ABOUT</a></nav>
             </div>
           </div>
-            {/* <a href="/"><h2>PYXIS</h2></a> */}
             <a href='/'><Image className="logo" priority src={pyxisLogo} alt="Pyxis"/></a>
             {/* <img src="{% static 'media/logo.svg' %}" className="logo"></img> */}
             <div className="auth">
