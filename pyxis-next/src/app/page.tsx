@@ -1,20 +1,26 @@
-import Image from 'next/image';
-import pyxisLogo from "/public/images/pyxis-logo.svg";
+import axios from 'axios'
+import Image from 'next/image'
+import pyxisLogo from "/public/images/pyxis-logo.svg"
 
 import { useState } from "react"
-import TestComponent from "./components/TestComponent"
-
-function DaysOfTheWeek() {
-  return <></>
-}
+import WeekDisplay from  "./components/WeekDisplay"
 
 export default function Home() {
   // TODO: Add universal data here
+  // figure out how to pass through children
+
   const daysOfWeek = {
+    0: { name: 'sunday', abbrv: 'S' },
+    1: { name: 'monday', abbrv: 'M' },
+    2: { name: 'tuesday', abbrv: 'T' },
+    3: { name: 'wednesday', abbrv: 'W' },
+    4: { name: 'thursday', abbrv: 'T' },
+    5: { name: 'friday', abbrv: 'F' },
+    6: { name: 'saturday', abbrv: 'S' },
   }
+
   return (
     <>
-    {/* TODO: all new timezone trouble */}
       <header id="header">
         <div id="user-info">
           <div className="menu">
@@ -36,9 +42,9 @@ export default function Home() {
                 <nav v-if="viewMenu"><a href="#">ABOUT</a></nav>
             </div>
           </div>
-            {/* <a href="/"><h2>PYXIS</h2></a> */}
-            <Image className="logo" priority src={pyxisLogo} alt="pyxis"/>
-            {/* <img src="{% static 'media/logo.svg' %}" className="logo"></img> */}
+            <a href="/">
+              <Image className="logo" priority src={pyxisLogo} alt="pyxis"/>
+            </a>
             <div className="auth">
                 <h2>USERNAME</h2>
             </div>
@@ -48,34 +54,8 @@ export default function Home() {
             </nav>
         </div>
 
-              <div id="weekdates">
-                  [[ weekStart ]] to [[ weekEnd ]]
-              </div>
-
-              <nav id="weekly-view">
-                  <div className="prev-week">
-                  {/* @click="weekPrev" */}
-                      <i className="fa-solid fa-angles-left"></i>
-                  </div>
-                  {/* <div v-for="day in daysOfTheWeek" :id="day.name" className="weekday" :className="[{selectDay:todayWeekday === day.name}, {selectDay:today === day.name}, 
-                          {weekahead: changeWeekNext}, {weekbehind: changeWeekPrev}]" @click="viewForDay(day.name)">
-                      [[ day.abbrv ]]
-                  </div> */}
-                  <div className="weekday">S</div>
-                  <div className="weekday">M</div>
-                  <div className="weekday">T</div>
-                  <div className="weekday">W</div>
-                  <div className="weekday">T</div>
-                  <div className="weekday">F</div>
-                  <div className="weekday">S</div>
-
-                  <div className="next-week">
-                  {/* @click="weekNext" */}
-                      <i className="fa-solid fa-angles-right"></i>
-                  </div>
-              </nav>
+          <WeekDisplay/>
           </header>
-          <TestComponent/>
     </>
   )
 }

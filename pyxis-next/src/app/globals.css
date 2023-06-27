@@ -109,6 +109,7 @@ nav {
 .logo {
   filter: saturate(80%) hue-rotate(350deg) brightness(600%) grayscale(30%);
   height: 80px;
+  width: auto;
   margin: 1em;
 }
 
