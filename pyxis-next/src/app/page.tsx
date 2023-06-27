@@ -1,12 +1,14 @@
-import Image from 'next/image';
-import pyxisLogo from "/public/images/pyxis-logo.svg";
+import axios from 'axios'
+import Image from 'next/image'
+import pyxisLogo from "/public/images/pyxis-logo.svg"
 
 import { useState } from "react"
-import TestComponent from "./components/TestComponent"
 import WeekDisplay from  "./components/WeekDisplay"
 
 export default function Home() {
   // TODO: Add universal data here
+  // figure out how to pass through children
+
   const daysOfWeek = {
     0: { name: 'sunday', abbrv: 'S' },
     1: { name: 'monday', abbrv: 'M' },
@@ -16,8 +18,6 @@ export default function Home() {
     5: { name: 'friday', abbrv: 'F' },
     6: { name: 'saturday', abbrv: 'S' },
   }
-  // const weekdayNames: Array<string> = ['Sunday','Monday','Tuesday','Wednesday',
-  //   'Thursday','Friday','Saturday']
 
   return (
     <>
@@ -42,9 +42,9 @@ export default function Home() {
                 <nav v-if="viewMenu"><a href="#">ABOUT</a></nav>
             </div>
           </div>
-            {/* <a href="/"><h2>PYXIS</h2></a> */}
-            <Image className="logo" priority src={pyxisLogo} alt="pyxis"/>
-            {/* <img src="{% static 'media/logo.svg' %}" className="logo"></img> */}
+            <a href="/">
+              <Image className="logo" priority src={pyxisLogo} alt="pyxis"/>
+            </a>
             <div className="auth">
                 <h2>USERNAME</h2>
             </div>
@@ -56,7 +56,6 @@ export default function Home() {
 
           <WeekDisplay/>
           </header>
-          <TestComponent/>
     </>
   )
 }
