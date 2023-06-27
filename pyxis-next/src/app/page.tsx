@@ -37,7 +37,7 @@ export default function Home() {
             </div>
           </div>
             {/* <a href="/"><h2>PYXIS</h2></a> */}
-            <Image className="logo" priority src={pyxisLogo} alt="pyxis"/>
+            <a href='/'><Image className="logo" priority src={pyxisLogo} alt="Pyxis"/></a>
             {/* <img src="{% static 'media/logo.svg' %}" className="logo"></img> */}
             <div className="auth">
                 <h2>USERNAME</h2>
