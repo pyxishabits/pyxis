@@ -4,6 +4,7 @@ import pyxisLogo from "/public/images/pyxis-logo.svg"
 
 import { useState } from "react"
 import WeekDisplay from  "./components/WeekDisplay"
+import MainFrame from "./components/MainFrame"
 
 export default function Home() {
   // TODO: Add universal data here
@@ -56,6 +57,18 @@ export default function Home() {
 
           <WeekDisplay/>
           </header>
+        
+        <div className='wrapper'>
+          <MainFrame type={'habits'}>
+          </MainFrame>
+
+          <MainFrame type={'tasks'}>
+          </MainFrame>
+
+          <MainFrame type={'journal'}>
+          </MainFrame>
+
+        </div>
     </>
   )
 }
