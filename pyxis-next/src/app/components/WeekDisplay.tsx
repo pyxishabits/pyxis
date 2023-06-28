@@ -1,29 +1,9 @@
 'use client'
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 
-const daysOfTheWeek = [
-    { name: 'sunday', abbrv: 'S' },
-    { name: 'monday', abbrv: 'M' },
-    { name: 'tuesday', abbrv: 'T' },
-    { name: 'wednesday', abbrv: 'W' },
-    { name: 'thursday', abbrv: 'T' },
-    { name: 'friday', abbrv: 'F' },
-    { name: 'saturday', abbrv: 'S' },
-  ]
-  
-function WeekSquares() {
+function Square({ day }: any) {
     const [isActiveDay, setActiveDay] = useState(false)
-
-    // const displaySquares = daysOfTheWeek.map(day =>
-    //     <div
-    //     key={day.name}
-    //     className={isActiveDay ? 'weekday selectDay' : 'weekday'}
-    //     onClick={() => selectDay(day)}
-    //     >
-    //     {day.abbrv}
-    //     </div>
-    // )
 
     function selectDay(day: any) {
         console.log(`clicked on ${day.name}`)
@@ -31,29 +11,41 @@ function WeekSquares() {
     }
 
     return (
-        // <>{displaySquares}</>
+        <div className={isActiveDay ? 'weekday selectDay' : 'weekday'}
+        key={day.name}
+        onClick={() => selectDay(day)}>
+            {day.abbrv}
+        </div>
+    )
+}
+
+function WeekSquares({ daysOfTheWeek }: any, { today }: any) {
+    const [isToday, setToday] = useState()
+
+    return (
         <>
-        {daysOfTheWeek.map((day) => (
+        <Square day={daysOfTheWeek[0]} key={daysOfTheWeek[0].name}/>
+        <Square day={daysOfTheWeek[1]} key={daysOfTheWeek[1].name}/>
+        <Square day={daysOfTheWeek[2]} key={daysOfTheWeek[2].name} className={today === daysOfTheWeek[0].name ? 'weekday selectDay' : 'weekday'}/>
+        <Square day={daysOfTheWeek[3]} key={daysOfTheWeek[3].name}/>
+        <Square day={daysOfTheWeek[4]} key={daysOfTheWeek[4].name}/>
+        <Square day={daysOfTheWeek[5]} key={daysOfTheWeek[5].name}/>
+        <Square day={daysOfTheWeek[6]} key={daysOfTheWeek[6].name}/>
+        {/* {daysOfTheWeek.map((day) => (
             <div className={isActiveDay ? 'weekday selectDay' : 'weekday'}
             key={day.name}
             onClick={() => selectDay(day)}
             >{day.abbrv}</div>
-        ))}
+        ))} */}
         </>
     )
 }
 
-function WeekDisplay() {
-    // WeekDisplay(weekdayNames: Array<string>)
-    // console.log(weekdayNames)
-    // turned into Object????
-    
+function WeekDisplay({ daysOfTheWeek }: any) {
 
+    let today = findToday()
     let weekStart = findThisWeek()[0]
-    let weekEnd = findThisWeek()[0]
-
-    const weekdayNames: Array<string> = ['Sunday','Monday','Tuesday','Wednesday',
-    'Thursday','Friday','Saturday']
+    let weekEnd = findThisWeek()[1]
 
     function findThisWeek() {
         let curr = new Date
@@ -63,6 +55,12 @@ function WeekDisplay() {
         let lastday = new Date(curr.setDate((curr.getDate() - curr.getDay()) + 6)).toDateString()
 
         return [firstday, lastday]
+    }
+
+    function findToday() {
+        const todayDate = new Date
+        const todayIndex = todayDate.getDay()
+        return daysOfTheWeek[todayIndex].name
     }
 
     function weekPrev() {
@@ -89,7 +87,7 @@ function WeekDisplay() {
                 onClick={() => selectDay(day)}
                 >{day[0]}</div>
             ))} */}
-            <WeekSquares/>
+            <WeekSquares daysOfTheWeek={ daysOfTheWeek} today={ findToday() } />
 
             <div className="next-week" onClick={weekNext}>
                 <i className="fa-solid fa-angles-right"></i>

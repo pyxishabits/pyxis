@@ -5,20 +5,19 @@ import pyxisLogo from "/public/images/pyxis-logo.svg"
 import { useState } from "react"
 import WeekDisplay from  "./components/WeekDisplay"
 
+const daysOfTheWeek = [
+  { name: 'sunday', abbrv: 'S' },
+  { name: 'monday', abbrv: 'M' },
+  { name: 'tuesday', abbrv: 'T' },
+  { name: 'wednesday', abbrv: 'W' },
+  { name: 'thursday', abbrv: 'T' },
+  { name: 'friday', abbrv: 'F' },
+  { name: 'saturday', abbrv: 'S' },
+]
+
 export default function Home() {
   // TODO: Add universal data here
   // figure out how to pass through children
-
-  const daysOfWeek = {
-    0: { name: 'sunday', abbrv: 'S' },
-    1: { name: 'monday', abbrv: 'M' },
-    2: { name: 'tuesday', abbrv: 'T' },
-    3: { name: 'wednesday', abbrv: 'W' },
-    4: { name: 'thursday', abbrv: 'T' },
-    5: { name: 'friday', abbrv: 'F' },
-    6: { name: 'saturday', abbrv: 'S' },
-  }
-
   return (
     <>
       <header id="header">
@@ -54,8 +53,8 @@ export default function Home() {
             </nav>
         </div>
 
-          <WeekDisplay/>
-          </header>
+      <WeekDisplay daysOfTheWeek={ daysOfTheWeek }/>
+      </header>
     </>
   )
 }
